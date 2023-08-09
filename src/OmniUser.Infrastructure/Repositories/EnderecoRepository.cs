@@ -46,8 +46,16 @@ public class EnderecoRepository : IEnderecoRepository
 
     protected virtual void Dispose(bool disposing)
     {
-        if (_disposed) return;
-        if (disposing) _baseRepository.Dispose();
+        if (_disposed)
+        {
+            return;
+        }
+
+        if (disposing)
+        {
+            _baseRepository.Dispose();
+        }
+
         _disposed = true;
     }
 }

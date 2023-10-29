@@ -18,6 +18,8 @@ public static class InjecaoDeDependenciasConfig
 
         services.AddScoped<IEnderecoRepository, EnderecoRepository>();
 
+        services.AddScoped<IRegistroAuditoriaRepository, RegistroAuditoriaRepository>();
+
         services.AddHttpClient<IViaCepRepository, ViaCepRepository>();
     }
 }

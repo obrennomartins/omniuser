@@ -176,10 +176,10 @@ public class UsuarioService : BaseService, IUsuarioService
             return false;
         }
 
-        if (endereco.UF != enderecoDaApi.Uf)
+        if (endereco.Uf != enderecoDaApi.Uf)
         {
             Notificar(
-                $"A UF informada não corresponde ao CEP. UF informada: {endereco.UF}. UF do CEP: {enderecoDaApi.Uf}.");
+                $"A Uf informada não corresponde ao CEP. Uf informada: {endereco.Uf}. Uf do CEP: {enderecoDaApi.Uf}.");
             return false;
         }
 

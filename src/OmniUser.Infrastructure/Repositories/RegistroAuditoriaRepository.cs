@@ -7,10 +7,10 @@ namespace OmniUser.Infrastructure.Repositories;
 public class RegistroAuditoriaRepository : IRegistroAuditoriaRepository
 {
     private readonly IBaseRepository<RegistroAuditoria> _baseRepository;
-    private readonly OmniUserContext _db;
+    private readonly OmniUserDbContext _db;
     private bool _disposed;
 
-    public RegistroAuditoriaRepository(OmniUserContext db, IBaseRepository<RegistroAuditoria> baseRepository)
+    public RegistroAuditoriaRepository(OmniUserDbContext db, IBaseRepository<RegistroAuditoria> baseRepository)
     {
         _baseRepository = baseRepository;
         _db = db;

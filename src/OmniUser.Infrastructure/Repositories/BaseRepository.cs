@@ -8,11 +8,11 @@ namespace OmniUser.Infrastructure.Repositories;
 
 public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : BaseEntity, new()
 {
-    private readonly OmniUserContext _db;
+    private readonly OmniUserDbContext _db;
     private readonly DbSet<TEntity> _dbSet;
     private bool _disposed;
 
-    public BaseRepository(OmniUserContext db)
+    public BaseRepository(OmniUserDbContext db)
     {
         _db = db;
         _dbSet = db.Set<TEntity>();

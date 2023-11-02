@@ -10,7 +10,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.RegistrarDependencias();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-builder.Services.AddDbContext<OmniUserContext>(options => { options.UseInMemoryDatabase("OmniUser"); });
+builder.Services.AddDbContext<OmniUserDbContext>();
 
 
 var app = builder.Build();

@@ -10,7 +10,7 @@ public abstract class BaseEntity
     public DateTime CriadoEm { get; set; }
     public DateTime AtualizadoEm { get; set; }
 
-    [NotMapped] public ValidationResult ValidationResult { get; set; } = new();
+    [NotMapped] public ValidationResult ValidationResult { get; protected set; } = new();
 
     public virtual bool EhValido()
     {

@@ -15,5 +15,30 @@ public class UsuarioMapping : IEntityTypeConfiguration<Usuario>
             .HasForeignKey<Endereco>(endereco => endereco.UsuarioId)
             .IsRequired(false)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Property(usuario => usuario.Nome)
+            .IsRequired()
+            .HasColumnType("text");
+
+        builder.Property(usuario => usuario.Email)
+            .HasColumnType("text");
+
+        builder.Property(usuario => usuario.Telefone)
+            .HasColumnType("text");
+
+        builder.Property(usuario => usuario.Documento)
+            .HasColumnType("text");
+
+        builder.Property(usuario => usuario.Ativo)
+            .IsRequired()
+            .HasColumnType("boolean");
+
+        builder.Property(usuario => usuario.CriadoEm)
+            .IsRequired()
+            .HasColumnType("timestamp");
+
+        builder.Property(usuario => usuario.AtualizadoEm)
+            .IsRequired()
+            .HasColumnType("timestamp");
     }
 }

@@ -25,7 +25,7 @@ public class EnderecoValidation : AbstractValidator<Endereco>
         RuleFor(endereco => endereco.Cidade)
             .Length(2, 50).WithMessage("O campo {PropertyName} precisa ter entre {MinLength} e {MaxLength} caracteres");
 
-        RuleFor(endereco => endereco.UF)
+        RuleFor(endereco => endereco.Uf)
             .Length(2, 20).WithMessage("O campo {PropertyName} precisa ter entre {MinLength} e {MaxLength} caracteres");
     }
 }

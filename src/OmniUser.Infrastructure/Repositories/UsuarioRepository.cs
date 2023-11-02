@@ -9,10 +9,10 @@ namespace OmniUser.Infrastructure.Repositories;
 public class UsuarioRepository : IUsuarioRepository
 {
     private readonly IBaseRepository<Usuario> _baseRepository;
-    private readonly OmniUserContext _db;
+    private readonly OmniUserDbContext _db;
     private bool _disposed;
 
-    public UsuarioRepository(OmniUserContext db, IBaseRepository<Usuario> baseRepository)
+    public UsuarioRepository(OmniUserDbContext db, IBaseRepository<Usuario> baseRepository)
     {
         _baseRepository = baseRepository;
         _db = db;

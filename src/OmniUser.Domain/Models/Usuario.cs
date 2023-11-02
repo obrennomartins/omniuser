@@ -11,9 +11,9 @@ public class Usuario : BaseEntity
     public Usuario(string nome, string? email, string? telefone, string? documento, Endereco? endereco, bool ativo)
     {
         Nome = nome;
-        Email = email == string.Empty ? null : email;
-        Telefone = telefone == string.Empty ? null : telefone;
-        Documento = documento == string.Empty ? null : documento;
+        Email = string.IsNullOrWhiteSpace(email) ? null : email;
+        Telefone = string.IsNullOrWhiteSpace(telefone) ? null : telefone;
+        Documento = string.IsNullOrWhiteSpace(documento) ? null : documento;
         Endereco = endereco;
         Ativo = ativo;
     }

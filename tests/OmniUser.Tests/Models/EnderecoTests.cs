@@ -337,7 +337,7 @@ public class EnderecoTests
         Assert.Contains("O campo Cidade precisa ter entre 2 e 50 caracteres", erros);
     }
 
-    [Fact(DisplayName = "Novo Endereco inválido (UF vazia)")]
+    [Fact(DisplayName = "Novo Endereco inválido (Uf vazia)")]
     [Trait("Categoria", "Model - Endereco")]
     public void Endereco_NovoEnderecoUFVazia_DeveEstarInvalido()
     {
@@ -351,10 +351,10 @@ public class EnderecoTests
         // Assert
         Assert.False(valido);
         Assert.Single(erros);
-        Assert.Contains("O campo UF precisa ter entre 2 e 20 caracteres", erros);
+        Assert.Contains("O campo Uf precisa ter entre 2 e 20 caracteres", erros);
     }
 
-    [Fact(DisplayName = "Novo Endereco inválido (UF < 2)")]
+    [Fact(DisplayName = "Novo Endereco inválido (Uf < 2)")]
     [Trait("Categoria", "Model - Endereco")]
     public void Endereco_NovoEnderecoUFMenor2_DeveEstarInvalido()
     {
@@ -368,10 +368,10 @@ public class EnderecoTests
         // Assert
         Assert.False(valido);
         Assert.Single(erros);
-        Assert.Contains("O campo UF precisa ter entre 2 e 20 caracteres", erros);
+        Assert.Contains("O campo Uf precisa ter entre 2 e 20 caracteres", erros);
     }
 
-    [Fact(DisplayName = "Novo Endereco inválido (UF > 20)")]
+    [Fact(DisplayName = "Novo Endereco inválido (Uf > 20)")]
     [Trait("Categoria", "Model - Endereco")]
     public void Endereco_NovoEnderecoUFMaior20_DeveEstarInvalido()
     {
@@ -385,6 +385,6 @@ public class EnderecoTests
         // Assert
         Assert.False(valido);
         Assert.Single(erros);
-        Assert.Contains("O campo UF precisa ter entre 2 e 20 caracteres", erros);
+        Assert.Contains("O campo Uf precisa ter entre 2 e 20 caracteres", erros);
     }
 }

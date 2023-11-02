@@ -14,11 +14,11 @@ public class Endereco : BaseEntity
         UsuarioId = usuarioId;
         Logradouro = logradouro;
         Numero = numero;
-        Complemento = complemento == string.Empty ? null : complemento;
+        Complemento = string.IsNullOrWhiteSpace(complemento) ? null : complemento;
         Cep = cep;
         Bairro = bairro;
         Cidade = cidade;
-        UF = uf;
+        Uf = uf;
         Usuario = usuario;
     }
 
@@ -30,7 +30,7 @@ public class Endereco : BaseEntity
     public string Cep { get; set; } = null!;
     public string Bairro { get; set; } = null!;
     public string Cidade { get; set; } = null!;
-    public string UF { get; set; } = null!;
+    public string Uf { get; set; } = null!;
 
     public Usuario Usuario { get; set; } = null!;
 

@@ -199,7 +199,7 @@ public class EnderecoTestsFixture
     {
         var endereco = GerarEndereco();
 
-        endereco.UF = string.Empty;
+        endereco.Uf = string.Empty;
 
         return endereco;
     }
@@ -208,7 +208,7 @@ public class EnderecoTestsFixture
     {
         var endereco = GerarEndereco();
 
-        endereco.UF = endereco.UF[..1];
+        endereco.Uf = endereco.Uf[..1];
 
         return endereco;
     }
@@ -218,7 +218,7 @@ public class EnderecoTestsFixture
         var faker = new Faker();
         var endereco = GerarEndereco();
 
-        endereco.UF = faker.Random.String2(21);
+        endereco.Uf = faker.Random.String2(21);
 
         return endereco;
     }

@@ -25,9 +25,13 @@ public class OmniUserDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
         optionsBuilder
-            .UseNpgsql(
+            .UseMySql(
                 _configuration.GetConnectionString("OmniUserDbContext"),
-                builder => builder.MigrationsHistoryTable(_configuration.GetConnectionString("OmniUserDbContextPrefix") + "__EFMigrationsHistory"));
+                ServerVersion.AutoDetect(_configuration.GetConnectionString("MYSQLCONNSTR_localdb")),
+                builder =>
+                {
+                    builder.MigrationsHistoryTable(_configuration.GetConnectionString("MySQLPrefix") + "__EFMigrationsHistory");
+                });
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -35,7 +39,7 @@ public class OmniUserDbContext : DbContext
 
         foreach (var entity in modelBuilder.Model.GetEntityTypes())
         {
-            entity.SetTableName(_configuration.GetConnectionString("OmniUserDbContextPrefix") + "_" + entity.GetTableName());
+            entity.SetTableName(_configuration.GetConnectionString("MySQLPrefix") + "_" + entity.GetTableName());
         }
     }
 
@@ -67,10 +71,7 @@ public class OmniUserDbContext : DbContext
 
     private static string GetChanges(EntityEntry entity)
     {
-        var changes = new Dictionary<string, object>
-        {
-            ["Id"] = entity.OriginalValues.GetValue<int>("Id")
-        };
+        var changes = new Dictionary<string, object>();
 
         foreach (var property in entity.OriginalValues.Properties)
         {
@@ -91,6 +92,8 @@ public class OmniUserDbContext : DbContext
                 };
             }
         }
+
+        changes["Id"] = entity.OriginalValues.GetValue<int>("Id");
 
         var retorno = JsonSerializer.Serialize(changes);
         return retorno;

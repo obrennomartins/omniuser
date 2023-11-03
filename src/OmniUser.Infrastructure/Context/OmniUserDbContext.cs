@@ -26,7 +26,7 @@ public class OmniUserDbContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
         optionsBuilder
             .UseMySql(
-                _configuration.GetConnectionString("OmniUserDbContext"),
+                _configuration.GetConnectionString("MYSQLCONNSTR_localdb"),
                 ServerVersion.AutoDetect(_configuration.GetConnectionString("MYSQLCONNSTR_localdb")),
                 builder =>
                 {

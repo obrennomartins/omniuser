@@ -26,11 +26,11 @@ public class OmniUserDbContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
         optionsBuilder
             .UseMySql(
-                _configuration.GetConnectionString("MYSQLCONNSTR_localdb"),
-                ServerVersion.AutoDetect(_configuration.GetConnectionString("MYSQLCONNSTR_localdb")),
+                _configuration.GetConnectionString("OmniUserDb"),
+                ServerVersion.AutoDetect(_configuration.GetConnectionString("OmniUserDb")),
                 builder =>
                 {
-                    builder.MigrationsHistoryTable(_configuration.GetConnectionString("MySQLPrefix") + "__EFMigrationsHistory");
+                    builder.MigrationsHistoryTable(_configuration.GetConnectionString("OmniUserDbPrefix") + "_EFMigrationsHistory");
                 });
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -39,7 +39,7 @@ public class OmniUserDbContext : DbContext
 
         foreach (var entity in modelBuilder.Model.GetEntityTypes())
         {
-            entity.SetTableName(_configuration.GetConnectionString("MySQLPrefix") + "_" + entity.GetTableName());
+            entity.SetTableName(_configuration.GetConnectionString("OmniUserDbPrefix") + entity.GetTableName());
         }
     }
 

@@ -25,17 +25,12 @@ public class OmniUserDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql(
-            _configuration["POSTGRESQLCONNSTR_OmniUserDb"],
-            builder => builder.MigrationsHistoryTable(_configuration["OmniUserDbPrefix"] + "EFMigrationsHistory"));
+        optionsBuilder.UseNpgsql(_configuration.GetConnectionString("POSTGRESQLCONNSTR_OmniUserDb"));
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(OmniUserDbContext).Assembly);
-
-        foreach (var entity in modelBuilder.Model.GetEntityTypes())
-            entity.SetTableName(_configuration["OmniUserDbPrefix"] + entity.GetTableName());
     }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

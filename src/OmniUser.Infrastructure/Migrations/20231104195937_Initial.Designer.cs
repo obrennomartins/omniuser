@@ -12,7 +12,7 @@ using OmniUser.Infrastructure.Context;
 namespace OmniUser.Infrastructure.Migrations
 {
     [DbContext(typeof(OmniUserDbContext))]
-    [Migration("20231104053817_Initial")]
+    [Migration("20231104195937_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

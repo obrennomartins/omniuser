@@ -8,7 +8,6 @@ builder.Services.AddSwaggerConfig();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.RegistrarDependencias();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddApplicationInsightsTelemetry();
 
 builder.Services.AddDbContext<OmniUserDbContext>();
 

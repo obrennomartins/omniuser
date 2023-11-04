@@ -24,14 +24,9 @@ public class OmniUserDbContext : DbContext
     public DbSet<RegistroAuditoria> RegistrosAuditoria { get; set; } = default!;
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
-        optionsBuilder
-            .UseMySql(
+        optionsBuilder.UseNpgsql(
                 _configuration.GetConnectionString("OmniUserDb"),
-                ServerVersion.AutoDetect(_configuration.GetConnectionString("OmniUserDb")),
-                builder =>
-                {
-                    builder.MigrationsHistoryTable(_configuration.GetConnectionString("OmniUserDbPrefix") + "_EFMigrationsHistory");
-                });
+                builder => builder.MigrationsHistoryTable(_configuration.GetConnectionString("OmniUserDbPrefix") + "EFMigrationsHistory"));
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -11,7 +11,7 @@ builder.Services.RegistrarDependencias();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddDbContext<OmniUserDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("POSTGRESQLCONNSTR_OmniUserDb")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("OmniUserDb")));
 
 
 var app = builder.Build();

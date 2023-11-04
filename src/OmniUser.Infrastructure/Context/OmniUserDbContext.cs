@@ -1,33 +1,41 @@
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.Extensions.Configuration;
 using OmniUser.Domain.Models;
 
 namespace OmniUser.Infrastructure.Context;
 
 public class OmniUserDbContext : DbContext
 {
-
-    public OmniUserDbContext(DbContextOptions<OmniUserDbContext> options) : base(options)
-    {
-    }
+    private readonly IConfiguration _configuration;
 
     static OmniUserDbContext()
     {
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
     }
 
+    public OmniUserDbContext(DbContextOptions<OmniUserDbContext> options, IConfiguration configuration) : base(options)
+    {
+        _configuration = configuration;
+    }
+
     public DbSet<Usuario> Usuarios { get; set; } = default!;
     public DbSet<RegistroAuditoria> RegistrosAuditoria { get; set; } = default!;
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseNpgsql(
+            _configuration["POSTGRESQLCONNSTR_OmniUserDb"],
+            builder => builder.MigrationsHistoryTable(_configuration["OmniUserDbPrefix"] + "EFMigrationsHistory"));
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(OmniUserDbContext).Assembly);
 
-        // foreach (var entity in modelBuilder.Model.GetEntityTypes())
-        // {
-        //     entity.SetTableName(_configuration.GetConnectionString("OmniUserDbPrefix") + entity.GetTableName());
-        // }
+        foreach (var entity in modelBuilder.Model.GetEntityTypes())
+            entity.SetTableName(_configuration["OmniUserDbPrefix"] + entity.GetTableName());
     }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -42,13 +50,15 @@ public class OmniUserDbContext : DbContext
             }
         }
 
-        foreach (var registroAuditoria in entityEntries.Where(e => e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted).Select(entidadeModificada => new RegistroAuditoria
-                 {
-                     Entidade = entidadeModificada.Entity.GetType().Name,
-                     Acao = entidadeModificada.State.ToString(),
-                     Timestamp = DateTime.Now,
-                     Alteracoes = GetChanges(entidadeModificada)
-                 }))
+        foreach (var registroAuditoria in entityEntries
+                     .Where(e => e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted).Select(
+                         entidadeModificada => new RegistroAuditoria
+                         {
+                             Entidade = entidadeModificada.Entity.GetType().Name,
+                             Acao = entidadeModificada.State.ToString(),
+                             Timestamp = DateTime.Now,
+                             Alteracoes = GetChanges(entidadeModificada)
+                         }))
         {
             RegistrosAuditoria.Add(registroAuditoria);
         }
@@ -64,7 +74,7 @@ public class OmniUserDbContext : DbContext
         {
             var original = entity.OriginalValues[property];
             var current = entity.CurrentValues[property];
-            
+
 
             if (entity.State is EntityState.Added)
             {
@@ -74,8 +84,8 @@ public class OmniUserDbContext : DbContext
             {
                 changes[property.Name] = new Dictionary<string, object?>
                 {
-                    {"From", original},
-                    {"To", current}
+                    { "From", original },
+                    { "To", current }
                 };
             }
         }

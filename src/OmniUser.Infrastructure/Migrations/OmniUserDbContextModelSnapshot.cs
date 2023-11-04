@@ -31,7 +31,7 @@ namespace OmniUser.Infrastructure.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("AtualizadoEm")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp");
 
                     b.Property<string>("Bairro")
                         .IsRequired()
@@ -49,7 +49,7 @@ namespace OmniUser.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CriadoEm")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp");
 
                     b.Property<string>("Logradouro")
                         .IsRequired()
@@ -71,7 +71,7 @@ namespace OmniUser.Infrastructure.Migrations
                     b.HasIndex("UsuarioId")
                         .IsUnique();
 
-                    b.ToTable("OmniUser_Endereco");
+                    b.ToTable("Endereco");
                 });
 
             modelBuilder.Entity("OmniUser.Domain.Models.RegistroAuditoria", b =>
@@ -108,7 +108,7 @@ namespace OmniUser.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("OmniUser_RegistrosAuditoria");
+                    b.ToTable("RegistrosAuditoria");
                 });
 
             modelBuilder.Entity("OmniUser.Domain.Models.Usuario", b =>
@@ -123,10 +123,10 @@ namespace OmniUser.Infrastructure.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<DateTime>("AtualizadoEm")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp");
 
                     b.Property<DateTime>("CriadoEm")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp");
 
                     b.Property<string>("Documento")
                         .HasColumnType("text");
@@ -143,7 +143,7 @@ namespace OmniUser.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("OmniUser_Usuarios");
+                    b.ToTable("Usuarios");
                 });
 
             modelBuilder.Entity("OmniUser.Domain.Models.Endereco", b =>
@@ -151,8 +151,7 @@ namespace OmniUser.Infrastructure.Migrations
                     b.HasOne("OmniUser.Domain.Models.Usuario", "Usuario")
                         .WithOne("Endereco")
                         .HasForeignKey("OmniUser.Domain.Models.Endereco", "UsuarioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Usuario");
                 });

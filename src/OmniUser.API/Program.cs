@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using OmniUser.API.Configurations;
 using OmniUser.Infrastructure.Context;
 
@@ -10,8 +9,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.RegistrarDependencias();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-builder.Services.AddDbContext<OmniUserDbContext>(options =>
-    options.UseNpgsql(builder.Configuration["OmniUserDb"]));
+builder.Services.AddDbContext<OmniUserDbContext>();
 
 
 var app = builder.Build();

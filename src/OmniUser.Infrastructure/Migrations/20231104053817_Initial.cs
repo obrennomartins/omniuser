@@ -13,7 +13,7 @@ namespace OmniUser.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "OmniUser_RegistrosAuditoria",
+                name: "RegistrosAuditoria",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -28,11 +28,11 @@ namespace OmniUser.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OmniUser_RegistrosAuditoria", x => x.Id);
+                    table.PrimaryKey("PK_RegistrosAuditoria", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "OmniUser_Usuarios",
+                name: "Usuarios",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -42,16 +42,16 @@ namespace OmniUser.Infrastructure.Migrations
                     Telefone = table.Column<string>(type: "text", nullable: true),
                     Documento = table.Column<string>(type: "text", nullable: true),
                     Ativo = table.Column<bool>(type: "boolean", nullable: false),
-                    CriadoEm = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    AtualizadoEm = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    CriadoEm = table.Column<DateTime>(type: "timestamp", nullable: false),
+                    AtualizadoEm = table.Column<DateTime>(type: "timestamp", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OmniUser_Usuarios", x => x.Id);
+                    table.PrimaryKey("PK_Usuarios", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "OmniUser_Endereco",
+                name: "Endereco",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -64,23 +64,23 @@ namespace OmniUser.Infrastructure.Migrations
                     Bairro = table.Column<string>(type: "text", nullable: false),
                     Cidade = table.Column<string>(type: "text", nullable: false),
                     Uf = table.Column<string>(type: "text", nullable: false),
-                    CriadoEm = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    AtualizadoEm = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    CriadoEm = table.Column<DateTime>(type: "timestamp", nullable: false),
+                    AtualizadoEm = table.Column<DateTime>(type: "timestamp", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OmniUser_Endereco", x => x.Id);
+                    table.PrimaryKey("PK_Endereco", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_OmniUser_Endereco_OmniUser_Usuarios_UsuarioId",
+                        name: "FK_Endereco_Usuarios_UsuarioId",
                         column: x => x.UsuarioId,
-                        principalTable: "OmniUser_Usuarios",
+                        principalTable: "Usuarios",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_OmniUser_Endereco_UsuarioId",
-                table: "OmniUser_Endereco",
+                name: "IX_Endereco_UsuarioId",
+                table: "Endereco",
                 column: "UsuarioId",
                 unique: true);
         }
@@ -89,13 +89,13 @@ namespace OmniUser.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "OmniUser_Endereco");
+                name: "Endereco");
 
             migrationBuilder.DropTable(
-                name: "OmniUser_RegistrosAuditoria");
+                name: "RegistrosAuditoria");
 
             migrationBuilder.DropTable(
-                name: "OmniUser_Usuarios");
+                name: "Usuarios");
         }
     }
 }

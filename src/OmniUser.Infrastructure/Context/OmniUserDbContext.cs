@@ -1,18 +1,15 @@
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.Extensions.Configuration;
 using OmniUser.Domain.Models;
 
 namespace OmniUser.Infrastructure.Context;
 
 public class OmniUserDbContext : DbContext
 {
-    private readonly IConfiguration _configuration;
 
-    public OmniUserDbContext(DbContextOptions<OmniUserDbContext> options, IConfiguration configuration) : base(options)
+    public OmniUserDbContext(DbContextOptions<OmniUserDbContext> options) : base(options)
     {
-        _configuration = configuration;
     }
 
     static OmniUserDbContext()
@@ -23,19 +20,14 @@ public class OmniUserDbContext : DbContext
     public DbSet<Usuario> Usuarios { get; set; } = default!;
     public DbSet<RegistroAuditoria> RegistrosAuditoria { get; set; } = default!;
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
-        optionsBuilder.UseNpgsql(
-                _configuration.GetConnectionString("OmniUserDb"),
-                builder => builder.MigrationsHistoryTable(_configuration.GetConnectionString("OmniUserDbPrefix") + "EFMigrationsHistory"));
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(OmniUserDbContext).Assembly);
 
-        foreach (var entity in modelBuilder.Model.GetEntityTypes())
-        {
-            entity.SetTableName(_configuration.GetConnectionString("OmniUserDbPrefix") + entity.GetTableName());
-        }
+        // foreach (var entity in modelBuilder.Model.GetEntityTypes())
+        // {
+        //     entity.SetTableName(_configuration.GetConnectionString("OmniUserDbPrefix") + entity.GetTableName());
+        // }
     }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

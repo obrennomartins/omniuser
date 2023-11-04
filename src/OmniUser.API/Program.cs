@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using OmniUser.API.Configurations;
 using OmniUser.Infrastructure.Context;
 
@@ -9,7 +10,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.RegistrarDependencias();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-builder.Services.AddDbContext<OmniUserDbContext>();
+builder.Services.AddDbContext<OmniUserDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("POSTGRESQLCONNSTR_OmniUserDb")));
 
 
 var app = builder.Build();

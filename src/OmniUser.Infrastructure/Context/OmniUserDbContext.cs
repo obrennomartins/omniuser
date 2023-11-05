@@ -25,9 +25,7 @@ public class OmniUserDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseMySql(
-            _configuration["MYSQLCONNSTR_localdb"],
-            ServerVersion.AutoDetect(_configuration["MYSQLCONNSTR_localdb"]));
+        optionsBuilder.UseNpgsql(_configuration.GetConnectionString("POSTGRESQLCONNSTR_OmniUserDb"));
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

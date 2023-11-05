@@ -25,7 +25,14 @@ public class OmniUserDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql(_configuration["POSTGRESQLCONNSTR_OmniUserDb"]);
+        optionsBuilder.UseNpgsql(_configuration["POSTGRESQLCONNSTR_OmniUserDb"], options =>
+        {
+            options.EnableRetryOnFailure(
+                10,
+                TimeSpan.FromSeconds(5),
+                null
+            );
+        });
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

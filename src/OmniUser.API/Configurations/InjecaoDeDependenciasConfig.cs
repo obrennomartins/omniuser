@@ -20,6 +20,8 @@ public static class InjecaoDeDependenciasConfig
 
         services.AddScoped<IRegistroAuditoriaRepository, RegistroAuditoriaRepository>();
 
-        services.AddHttpClient<IViaCepRepository, ViaCepRepository>();
+        services.AddHttpClient<IViaCepRepository, ViaCepRepository>()
+            .SetHandlerLifetime(TimeSpan.FromMinutes(1))
+            .AddPolicyHandler(PollyConfig.GetRetryPolicy());
     }
 }

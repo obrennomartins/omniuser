@@ -1,6 +1,6 @@
 namespace OmniUser.Domain.Models;
 
-public record EnderecoViaCepDto
+public record EnderecoViaCep
 {
     public string Cep { get; init; } = null!;
     public string Logradouro { get; init; } = null!;

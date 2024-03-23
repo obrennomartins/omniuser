@@ -181,7 +181,7 @@ public class EnderecoTests
         // Assert
         Assert.False(valido);
         Assert.Single(erros);
-        Assert.Contains("O campo Cep precisa ter 8 dígitos", erros);
+        Assert.Contains("O campo Cep precisa ter exatamente 8 dígitos, sem traço", erros);
     }
 
     [Fact(DisplayName = "Novo Endereco inválido (CEP < 8)")]
@@ -198,7 +198,7 @@ public class EnderecoTests
         // Assert
         Assert.False(valido);
         Assert.Single(erros);
-        Assert.Contains("O campo Cep precisa ter 8 dígitos", erros);
+        Assert.Contains("O campo Cep precisa ter exatamente 8 dígitos, sem traço", erros);
     }
 
     [Fact(DisplayName = "Novo Endereco inválido (CEP > 8)")]
@@ -215,7 +215,7 @@ public class EnderecoTests
         // Assert
         Assert.False(valido);
         Assert.Single(erros);
-        Assert.Contains("O campo Cep precisa ter 8 dígitos", erros);
+        Assert.Contains("O campo Cep precisa ter exatamente 8 dígitos, sem traço", erros);
     }
 
     [Fact(DisplayName = "Novo Endereco inválido (CEP com letras)")]
@@ -232,7 +232,7 @@ public class EnderecoTests
         // Assert
         Assert.False(valido);
         Assert.Single(erros);
-        Assert.Contains("O campo Cep precisa ter 8 dígitos", erros);
+        Assert.Contains("O campo Cep precisa ter exatamente 8 dígitos, sem traço", erros);
     }
 
     [Fact(DisplayName = "Novo Endereco inválido (Bairro Vazio)")]

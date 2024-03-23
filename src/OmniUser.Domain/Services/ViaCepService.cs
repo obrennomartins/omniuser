@@ -14,7 +14,7 @@ public sealed class ViaCepService : BaseService, IViaCepService
         _viaCepRepository = viaCepRepository;
     }
 
-    public async Task<EnderecoViaCepDto?> ObterEndereco(string cep)
+    public async Task<EnderecoViaCep?> ObterEndereco(string cep)
     {
         // ReSharper disable once InvertIf
         if (cep.Length != 8 || !cep.All(char.IsDigit))

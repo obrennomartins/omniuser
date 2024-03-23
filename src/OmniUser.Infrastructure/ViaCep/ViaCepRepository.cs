@@ -14,7 +14,7 @@ public class ViaCepRepository : IViaCepRepository
         _httpClient = httpClient;
     }
 
-    public async Task<EnderecoViaCepDto?> ObterEndereco(string cep)
+    public async Task<EnderecoViaCep?> ObterEndereco(string cep)
     {
         var resposta = await _httpClient.GetAsync($"/ws/{cep}/json");
         resposta.EnsureSuccessStatusCode();
@@ -23,7 +23,7 @@ public class ViaCepRepository : IViaCepRepository
         {
             PropertyNameCaseInsensitive = true
         };
-        var endereco = await resposta.Content.ReadFromJsonAsync<EnderecoViaCepDto>(options);
+        var endereco = await resposta.Content.ReadFromJsonAsync<EnderecoViaCep>(options);
 
         return endereco;
     }

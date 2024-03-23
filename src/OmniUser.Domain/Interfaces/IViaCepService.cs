@@ -4,5 +4,5 @@ namespace OmniUser.Domain.Interfaces;
 
 public interface IViaCepService : IDisposable
 {
-    Task<EnderecoViaCepDto?> ObterEndereco(string cep);
+    Task<EnderecoViaCep?> ObterEndereco(string cep);
 }

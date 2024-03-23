@@ -17,30 +17,37 @@ public class EnderecoMapping : IEntityTypeConfiguration<Endereco>
 
         builder.Property(endereco => endereco.Logradouro)
             .IsRequired()
-            .HasColumnType("text");
+            .HasColumnType("text")
+            .HasMaxLength(200);
 
         builder.Property(endereco => endereco.Numero)
             .IsRequired()
-            .HasColumnType("text");
+            .HasColumnType("text")
+            .HasMaxLength(20);
 
         builder.Property(endereco => endereco.Complemento)
-            .HasColumnType("text");
+            .HasColumnType("text")
+            .HasMaxLength(100);
 
         builder.Property(endereco => endereco.Cep)
             .IsRequired()
-            .HasColumnType("text");
+            .HasColumnType("text")
+            .HasMaxLength(8);
 
         builder.Property(endereco => endereco.Bairro)
             .IsRequired()
-            .HasColumnType("text");
+            .HasColumnType("text")
+            .HasMaxLength(50);
 
         builder.Property(endereco => endereco.Cidade)
             .IsRequired()
-            .HasColumnType("text");
+            .HasColumnType("text")
+            .HasMaxLength(50);
 
         builder.Property(endereco => endereco.Uf)
             .IsRequired()
-            .HasColumnType("text");
+            .HasColumnType("text")
+            .HasMaxLength(20);
 
         builder.Property(endereco => endereco.CriadoEm)
             .IsRequired()

@@ -18,16 +18,20 @@ public class UsuarioMapping : IEntityTypeConfiguration<Usuario>
 
         builder.Property(usuario => usuario.Nome)
             .IsRequired()
-            .HasColumnType("text");
+            .HasColumnType("text")
+            .HasMaxLength(100);
 
         builder.Property(usuario => usuario.Email)
-            .HasColumnType("text");
+            .HasColumnType("text")
+            .HasMaxLength(100);
 
         builder.Property(usuario => usuario.Telefone)
-            .HasColumnType("text");
+            .HasColumnType("text")
+            .HasMaxLength(11);
 
         builder.Property(usuario => usuario.Documento)
-            .HasColumnType("text");
+            .HasColumnType("text")
+            .HasMaxLength(20);
 
         builder.Property(usuario => usuario.Ativo)
             .IsRequired()

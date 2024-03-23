@@ -12,13 +12,13 @@ public abstract class BaseController : Controller
     {
         _notificador = notificador;
     }
-    
-    public bool OperacaoValida()
+
+    private bool OperacaoValida()
     {
         return !_notificador.TemNotificacao();
     }
 
-    public ActionResult CustomResponse(object? result = null)
+    protected ActionResult CustomResponse(object? result = null)
     {
         if (OperacaoValida())
         {
@@ -32,7 +32,7 @@ public abstract class BaseController : Controller
         });
     }
 
-    public ActionResult CustomResponse(ModelStateDictionary modelState)
+    protected ActionResult CustomResponse(ModelStateDictionary modelState)
     {
         if (!modelState.IsValid)
         {
@@ -42,7 +42,7 @@ public abstract class BaseController : Controller
         return CustomResponse();
     }
 
-    public void NotificarErroModelInvalida(ModelStateDictionary modelState)
+    private void NotificarErroModelInvalida(ModelStateDictionary modelState)
     {
         var erros = modelState.Values.SelectMany(e => e.Errors);
         foreach (var erro in erros)
@@ -52,7 +52,7 @@ public abstract class BaseController : Controller
         }
     }
 
-    public void NotificarErro(string mensagem)
+    protected void NotificarErro(string mensagem)
     {
         _notificador.Handle(new Notificacao(mensagem));
     }

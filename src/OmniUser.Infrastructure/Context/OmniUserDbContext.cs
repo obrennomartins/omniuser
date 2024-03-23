@@ -46,8 +46,8 @@ public class OmniUserDbContext : DbContext
         }
 
         foreach (var registroAuditoria in entityEntries
-                     .Where(e => e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted).Select(
-                         entidadeModificada => new RegistroAuditoria
+                     .Where(e => e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted)
+                     .Select(entidadeModificada => new RegistroAuditoria
                          {
                              Entidade = entidadeModificada.Entity.GetType().Name,
                              Acao = entidadeModificada.State.ToString(),
@@ -61,33 +61,32 @@ public class OmniUserDbContext : DbContext
         return base.SaveChangesAsync(cancellationToken);
     }
 
-    private static string GetChanges(EntityEntry entity)
+    private static string GetChanges(EntityEntry entidade)
     {
-        var changes = new Dictionary<string, object>();
+        var alteracoes = new Dictionary<string, object>();
 
-        foreach (var property in entity.OriginalValues.Properties)
+        foreach (var propriedade in entidade.OriginalValues.Properties)
         {
-            var original = entity.OriginalValues[property];
-            var current = entity.CurrentValues[property];
+            var original = entidade.OriginalValues[propriedade];
+            var atual = entidade.CurrentValues[propriedade];
 
-
-            if (entity.State is EntityState.Added)
+            if (entidade.State is EntityState.Added)
             {
-                changes[property.Name] = original ?? string.Empty;
+                alteracoes[propriedade.Name] = original ?? string.Empty;
             }
-            else if (!Equals(original, current))
+            else if (!Equals(original, atual))
             {
-                changes[property.Name] = new Dictionary<string, object?>
+                alteracoes[propriedade.Name] = new Dictionary<string, object?>
                 {
-                    { "From", original },
-                    { "To", current }
+                    { "De", original },
+                    { "Para", atual }
                 };
             }
         }
 
-        changes["Id"] = entity.OriginalValues.GetValue<int>("Id");
+        alteracoes["Id"] = entidade.OriginalValues.GetValue<int>("Id");
 
-        var retorno = JsonSerializer.Serialize(changes);
+        var retorno = JsonSerializer.Serialize(alteracoes);
         return retorno;
     }
 }

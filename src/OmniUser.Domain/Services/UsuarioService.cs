@@ -1,53 +1,56 @@
 using OmniUser.Domain.Interfaces;
 using OmniUser.Domain.Models;
+using OmniUser.Domain.Models.Validations;
 using OmniUser.Domain.Notificacoes;
 
 namespace OmniUser.Domain.Services;
 
-public class UsuarioService : BaseService, IUsuarioService
+public sealed class UsuarioService : BaseService, IUsuarioService
 {
     private readonly IEnderecoRepository _enderecoRepository;
     private readonly IUsuarioRepository _usuarioRepository;
-    private readonly IViaCepRepository _viaCepRepository;
+    private readonly IViaCepService _viaCepService;
     private bool _disposed;
 
     public UsuarioService(INotificador notificador,
         IEnderecoRepository enderecoRepository,
         IUsuarioRepository usuarioRepository,
-        IViaCepRepository viaCepRepository) : base(notificador)
+        IViaCepService viaCepService) : base(notificador)
     {
-        _usuarioRepository = usuarioRepository;
-        _viaCepRepository = viaCepRepository;
         _enderecoRepository = enderecoRepository;
+        _usuarioRepository = usuarioRepository;
+        _viaCepService = viaCepService;
     }
 
     public async Task<Usuario?> Adicionar(Usuario usuario)
     {
-        if (!usuario.EhValido())
+        if (!ExecutarValidacao(new UsuarioValidation(), usuario))
         {
             return null;
         }
 
-        if (usuario.Endereco == null || !usuario.Endereco.EhValido() || !await CepValido(usuario.Endereco))
+        if (usuario.Endereco is not null && (!ExecutarValidacao(new EnderecoValidation(), usuario.Endereco) ||
+                                             !CepValido(usuario.Endereco).Result))
         {
             return null;
         }
 
-        // O documento não é obrigatório, mas, se informado, deve ser diferente de qualquer outro usuário
+        // O documento não é obrigatório, mas, se informado, deve ser diferente do documento de qualquer outro usuário
         if (usuario.Documento != null && _usuarioRepository.Buscar(u => u.Documento == usuario.Documento).Result.Any())
         {
             Notificar("Já existe um usuário com o documento informado.");
             return null;
         }
 
-        // O e-mail não é obrigatório, mas, se informado, deve ser diferente de qualquer outro usuário
+        // O e-mail não é obrigatório, mas, se informado, deve ser diferente do e-mail de qualquer outro usuário
         if (usuario.Email != null && _usuarioRepository.Buscar(u => u.Email == usuario.Email).Result.Any())
         {
             Notificar("Já existe um usuário com o e-mail informado.");
             return null;
         }
 
-        // O telefone não é obrigatório, mas, se informado, deve ser diferente de qualquer outro usuário
+        // O telefone não é obrigatório, mas, se informado, deve ser diferente do telefone de qualquer outro usuário
+        // ReSharper disable once InvertIf
         if (usuario.Telefone != null && _usuarioRepository.Buscar(u => u.Telefone == usuario.Telefone).Result.Any())
         {
             Notificar("Já existe um usuário com o telefone informado.");
@@ -160,6 +163,11 @@ public class UsuarioService : BaseService, IUsuarioService
         return await _enderecoRepository.Atualizar(endereco);
     }
 
+    ~UsuarioService()
+    {
+        Dispose();
+    }
+
     public void Dispose()
     {
         Dispose(true);
@@ -168,7 +176,7 @@ public class UsuarioService : BaseService, IUsuarioService
 
     private async Task<bool> CepValido(Endereco endereco)
     {
-        var enderecoDaApi = await _viaCepRepository.ObterEndereco(endereco.Cep);
+        var enderecoDaApi = await _viaCepService.ObterEndereco(endereco.Cep);
 
         if (enderecoDaApi == null)
         {
@@ -183,6 +191,7 @@ public class UsuarioService : BaseService, IUsuarioService
             return false;
         }
 
+        // ReSharper disable once InvertIf
         if (endereco.Cidade != enderecoDaApi.Localidade)
         {
             Notificar(
@@ -193,7 +202,7 @@ public class UsuarioService : BaseService, IUsuarioService
         return true;
     }
 
-    protected virtual void Dispose(bool disposing)
+    private void Dispose(bool disposing)
     {
         if (_disposed)
         {

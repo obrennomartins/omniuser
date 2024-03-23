@@ -11,21 +11,27 @@ public class EnderecoValidation : AbstractValidator<Endereco>
             .WithMessage("O campo {PropertyName} precisa ter entre {MinLength} e {MaxLength} caracteres");
 
         RuleFor(endereco => endereco.Numero)
-            .Length(1, 20).WithMessage("O campo {PropertyName} precisa ter entre {MinLength} e {MaxLength} caracteres");
+            .Length(1, 20)
+            .WithMessage("O campo {PropertyName} precisa ter entre {MinLength} e {MaxLength} caracteres");
 
         RuleFor(endereco => endereco.Complemento)
-            .MaximumLength(100).WithMessage("O campo {PropertyName} precisa ter no máximo {MaxLength} caracteres");
+            .MaximumLength(100)
+            .WithMessage("O campo {PropertyName} precisa ter no máximo {MaxLength} caracteres");
 
         RuleFor(endereco => endereco.Cep)
-            .Matches("^[0-9]{8}$").WithMessage("O campo {PropertyName} precisa ter 8 dígitos");
+            .Matches("^[0-9]{8}$")
+            .WithMessage("O campo {PropertyName} precisa ter exatamente 8 dígitos, sem traço");
 
         RuleFor(endereco => endereco.Bairro)
-            .Length(2, 50).WithMessage("O campo {PropertyName} precisa ter entre {MinLength} e {MaxLength} caracteres");
+            .Length(2, 50)
+            .WithMessage("O campo {PropertyName} precisa ter entre {MinLength} e {MaxLength} caracteres");
 
         RuleFor(endereco => endereco.Cidade)
-            .Length(2, 50).WithMessage("O campo {PropertyName} precisa ter entre {MinLength} e {MaxLength} caracteres");
+            .Length(2, 50)
+            .WithMessage("O campo {PropertyName} precisa ter entre {MinLength} e {MaxLength} caracteres");
 
         RuleFor(endereco => endereco.Uf)
-            .Length(2, 20).WithMessage("O campo {PropertyName} precisa ter entre {MinLength} e {MaxLength} caracteres");
+            .Length(2, 20)
+            .WithMessage("O campo {PropertyName} precisa ter entre {MinLength} e {MaxLength} caracteres");
     }
 }

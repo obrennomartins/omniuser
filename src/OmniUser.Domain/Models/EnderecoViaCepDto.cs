@@ -1,4 +1,4 @@
-namespace OmniUser.Infrastructure.ViaCep;
+namespace OmniUser.Domain.Models;
 
 public record EnderecoViaCepDto
 {

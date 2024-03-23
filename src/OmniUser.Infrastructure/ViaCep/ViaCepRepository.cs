@@ -1,18 +1,17 @@
 using System.Net.Http.Json;
 using System.Text.Json;
 using OmniUser.Domain.Interfaces;
+using OmniUser.Domain.Models;
 
 namespace OmniUser.Infrastructure.ViaCep;
 
 public class ViaCepRepository : IViaCepRepository
 {
     private readonly HttpClient _httpClient;
-    private const string ViaCepBaseAddress = "https://viacep.com.br/";
 
     public ViaCepRepository(HttpClient httpClient)
     {
         _httpClient = httpClient;
-        _httpClient.BaseAddress = new Uri(ViaCepBaseAddress);
     }
 
     public async Task<EnderecoViaCepDto?> ObterEndereco(string cep)

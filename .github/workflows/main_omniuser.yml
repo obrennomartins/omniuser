@@ -9,6 +9,10 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  WEB_JOB_OUTPUT: '/myapp/App_Data/Jobs/Triggered/OmniUserJobs'
+  WEB_JOB_PROJECT_LOCATION: './src/OmniUser.Jobs/OmniUser.Jobs.csproj'
+
 jobs:
   build:
     runs-on: windows-latest
@@ -23,9 +27,12 @@ jobs:
           include-prerelease: true
 
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build -c Release
 
-      - name: dotnet publish
+      - name: Publish WebJobs
+        run: dotnet publish ${{ env.PROJECT_LOCATION }} -c Release -o ${{ env.DOTNET_ROOT }}${{ env.WEB_JOB_OUTPUT }}
+
+      - name: Publish WebApp
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job

@@ -17,7 +17,8 @@ public class ViaCepRepository : IViaCepRepository
     public async Task<EnderecoViaCep?> ObterEndereco(string cep)
     {
         var resposta = await _httpClient.GetAsync($"/ws/{cep}/json");
-        resposta.EnsureSuccessStatusCode();
+
+        if (!resposta.IsSuccessStatusCode) return null;
 
         var options = new JsonSerializerOptions
         {

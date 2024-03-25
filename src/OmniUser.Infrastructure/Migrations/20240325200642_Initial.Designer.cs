@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using OmniUser.Infrastructure.Context;
 
 #nullable disable
@@ -11,7 +12,7 @@ using OmniUser.Infrastructure.Context;
 namespace OmniUser.Infrastructure.Migrations
 {
     [DbContext(typeof(OmniUserDbContext))]
-    [Migration("20231105011402_Initial")]
+    [Migration("20240325200642_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -20,30 +21,38 @@ namespace OmniUser.Infrastructure.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.13")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("OmniUser.Domain.Models.Endereco", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("AtualizadoEm")
                         .HasColumnType("timestamp");
 
                     b.Property<string>("Bairro")
                         .IsRequired()
+                        .HasMaxLength(50)
                         .HasColumnType("text");
 
                     b.Property<string>("Cep")
                         .IsRequired()
+                        .HasMaxLength(8)
                         .HasColumnType("text");
 
                     b.Property<string>("Cidade")
                         .IsRequired()
+                        .HasMaxLength(50)
                         .HasColumnType("text");
 
                     b.Property<string>("Complemento")
+                        .HasMaxLength(100)
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CriadoEm")
@@ -51,18 +60,21 @@ namespace OmniUser.Infrastructure.Migrations
 
                     b.Property<string>("Logradouro")
                         .IsRequired()
+                        .HasMaxLength(200)
                         .HasColumnType("text");
 
                     b.Property<string>("Numero")
                         .IsRequired()
+                        .HasMaxLength(20)
                         .HasColumnType("text");
 
                     b.Property<string>("Uf")
                         .IsRequired()
+                        .HasMaxLength(20)
                         .HasColumnType("text");
 
                     b.Property<int>("UsuarioId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -76,7 +88,9 @@ namespace OmniUser.Infrastructure.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Acao")
                         .IsRequired()
@@ -87,10 +101,10 @@ namespace OmniUser.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("AtualizadoEm")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime>("CriadoEm")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Entidade")
                         .IsRequired()
@@ -111,7 +125,9 @@ namespace OmniUser.Infrastructure.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("Ativo")
                         .HasColumnType("boolean");
@@ -123,16 +139,20 @@ namespace OmniUser.Infrastructure.Migrations
                         .HasColumnType("timestamp");
 
                     b.Property<string>("Documento")
+                        .HasMaxLength(20)
                         .HasColumnType("text");
 
                     b.Property<string>("Email")
+                        .HasMaxLength(100)
                         .HasColumnType("text");
 
                     b.Property<string>("Nome")
                         .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("text");
 
                     b.Property<string>("Telefone")
+                        .HasMaxLength(11)
                         .HasColumnType("text");
 
                     b.HasKey("Id");

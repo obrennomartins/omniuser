@@ -163,15 +163,15 @@ public sealed class UsuarioService : BaseService, IUsuarioService
         return await _enderecoRepository.Atualizar(endereco);
     }
 
-    ~UsuarioService()
-    {
-        Dispose();
-    }
-
     public void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);
+    }
+
+    ~UsuarioService()
+    {
+        Dispose();
     }
 
     private async Task<bool> CepValido(Endereco endereco)
@@ -180,14 +180,15 @@ public sealed class UsuarioService : BaseService, IUsuarioService
 
         if (enderecoDaApi == null)
         {
-            Notificar("CEP não encontrado.");
             return false;
         }
 
         if (endereco.Uf != enderecoDaApi.Uf)
         {
             Notificar(
-                $"A Uf informada não corresponde ao CEP. Uf informada: {endereco.Uf}. Uf do CEP: {enderecoDaApi.Uf}.");
+                $"A Uf informada não corresponde ao CEP. " +
+                $"Uf informada: {endereco.Uf}. " +
+                $"Uf do CEP: {enderecoDaApi.Uf}.");
             return false;
         }
 
@@ -195,7 +196,9 @@ public sealed class UsuarioService : BaseService, IUsuarioService
         if (endereco.Cidade != enderecoDaApi.Localidade)
         {
             Notificar(
-                $"A cidade informada não corresponde ao CEP. Cidade informada: {endereco.Cidade}. Cidade do CEP: {enderecoDaApi.Localidade}.");
+                $"A cidade informada não corresponde ao CEP. " +
+                $"Cidade informada: {endereco.Cidade}. " +
+                $"Cidade do CEP: {enderecoDaApi.Localidade}.");
             return false;
         }
 

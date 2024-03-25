@@ -7,7 +7,7 @@ namespace OmniUser.Domain.Services;
 public sealed class ViaCepService : BaseService, IViaCepService
 {
     private readonly IViaCepRepository _viaCepRepository;
-    
+
     public ViaCepService(INotificador notificador,
         IViaCepRepository viaCepRepository) : base(notificador)
     {
@@ -16,23 +16,31 @@ public sealed class ViaCepService : BaseService, IViaCepService
 
     public async Task<EnderecoViaCep?> ObterEndereco(string cep)
     {
-        // ReSharper disable once InvertIf
         if (cep.Length != 8 || !cep.All(char.IsDigit))
         {
             Notificar("O CEP precisa ter exatamente 8 dígitos, sem traço");
             return null;
         }
 
-        return await _viaCepRepository.ObterEndereco(cep);
-    }
+        var resposta = await _viaCepRepository.ObterEndereco(cep);
 
-    ~ViaCepService()
-    {
-        Dispose();
+        // ReSharper disable once InvertIf
+        if (resposta?.Cep is null)
+        {
+            Notificar("Houve um problema ao obter as informações do CEP");
+            return null;
+        }
+
+        return resposta;
     }
 
     public void Dispose()
     {
         GC.SuppressFinalize(this);
+    }
+
+    ~ViaCepService()
+    {
+        Dispose();
     }
 }

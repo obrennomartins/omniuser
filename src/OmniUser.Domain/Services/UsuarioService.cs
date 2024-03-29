@@ -35,25 +35,8 @@ public sealed class UsuarioService : BaseService, IUsuarioService
             return null;
         }
 
-        // O documento não é obrigatório, mas, se informado, deve ser diferente do documento de qualquer outro usuário
-        if (usuario.Documento != null && _usuarioRepository.Buscar(u => u.Documento == usuario.Documento).Result.Any())
+        if (!VerificaUnicidade(usuario))
         {
-            Notificar("Já existe um usuário com o documento informado.");
-            return null;
-        }
-
-        // O e-mail não é obrigatório, mas, se informado, deve ser diferente do e-mail de qualquer outro usuário
-        if (usuario.Email != null && _usuarioRepository.Buscar(u => u.Email == usuario.Email).Result.Any())
-        {
-            Notificar("Já existe um usuário com o e-mail informado.");
-            return null;
-        }
-
-        // O telefone não é obrigatório, mas, se informado, deve ser diferente do telefone de qualquer outro usuário
-        // ReSharper disable once InvertIf
-        if (usuario.Telefone != null && _usuarioRepository.Buscar(u => u.Telefone == usuario.Telefone).Result.Any())
-        {
-            Notificar("Já existe um usuário com o telefone informado.");
             return null;
         }
 
@@ -75,34 +58,14 @@ public sealed class UsuarioService : BaseService, IUsuarioService
             return null;
         }
 
-        if (_usuarioRepository.Buscar(u => u.Documento == usuario.Documento && u.Id != usuario.Id).Result.Any())
-        {
-            Notificar("Já existe um usuário com o documento informado.");
-            return null;
-        }
-
-        // O e-mail não é obrigatório, mas, se informado, deve ser diferente de qualquer outro usuário
-        if (usuario.Email != null &&
-            _usuarioRepository.Buscar(u => u.Email == usuario.Email && u.Id != usuario.Id).Result.Any())
-        {
-            Notificar("Já existe um usuário com o e-mail informado.");
-            return null;
-        }
-
-        // O telefone não é obrigatório, mas, se informado, deve ser diferente de qualquer outro usuário
-        if (usuario.Telefone != null &&
-            _usuarioRepository.Buscar(u => u.Telefone == usuario.Telefone && u.Id != usuario.Id).Result.Any())
-        {
-            Notificar("Já existe um usuário com o telefone informado.");
-            return null;
-        }
-
         // Para modificar o campo Ativo, use os métodos Ativar e Desativar.
         if (usuarioDb.Ativo != usuario.Ativo)
         {
             Notificar("O campo Ativo não deve ser modificado através deste método.");
             return null;
         }
+
+        if (!VerificaUnicidade(usuario)) return null;
 
         usuarioDb.Nome = usuario.Nome;
         usuarioDb.Documento = usuario.Documento;
@@ -172,6 +135,34 @@ public sealed class UsuarioService : BaseService, IUsuarioService
     ~UsuarioService()
     {
         Dispose();
+    }
+
+    /// <summary>
+    ///     Verifica se o documento, o e-mail e o telefone do <see cref="Usuario" /> são únicos. Se não forem, notifica.
+    /// </summary>
+    /// <param name="usuario">O Usuário a ser verificado.</param>
+    /// <returns>Retorna true se ele for único, false caso contrário.</returns>
+    private bool VerificaUnicidade(Usuario usuario)
+    {
+        var usuarioExistente = _usuarioRepository.Buscar(u =>
+            (usuario.Documento != null && u.Documento == usuario.Documento) ||
+            (usuario.Email != null && u.Email == usuario.Email) ||
+            (usuario.Telefone != null && u.Telefone == usuario.Telefone)).Result.FirstOrDefault();
+
+        // ReSharper disable once InvertIf
+        if (usuarioExistente is not null)
+        {
+            if (usuario.Documento is not null && usuarioExistente.Documento == usuario.Documento)
+                Notificar("Já existe um usuário com o documento informado.");
+            else if (usuario.Email is not null && usuarioExistente.Email == usuario.Email)
+                Notificar("Já existe um usuário com o e-mail informado.");
+            else if (usuario.Telefone is not null && usuarioExistente.Telefone == usuario.Telefone)
+                Notificar("Já existe um usuário com o telefone informado.");
+
+            return false;
+        }
+
+        return true;
     }
 
     private async Task<bool> CepValido(Endereco endereco)

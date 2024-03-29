@@ -8,7 +8,7 @@ public record EnderecoViewModel
     public string Cep { get; set; } = null!;
     public string Bairro { get; set; } = null!;
     public string Cidade { get; set; } = null!;
-    public string UF { get; set; } = null!;
+    public string Uf { get; set; } = null!;
 
     public int UsuarioId { get; set; }
 }

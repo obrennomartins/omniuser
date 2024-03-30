@@ -1,5 +1,5 @@
-# Created by https://www.toptal.com/developers/gitignore/api/linux,macos,rider,csharp,windows,dotnetcore,visualstudio,visualstudiocode,jetbrains+all
-# Edit at https://www.toptal.com/developers/gitignore?templates=linux,macos,rider,csharp,windows,dotnetcore,visualstudio,visualstudiocode,jetbrains+all
+# Created by https://www.toptal.com/developers/gitignore/api/linux,macos,csharp,windows,dotnetcore,visualstudio,visualstudiocode,rider,jetbrains+all,sonar,sonarqube
+# Edit at https://www.toptal.com/developers/gitignore?templates=linux,macos,csharp,windows,dotnetcore,visualstudio,visualstudiocode,rider,jetbrains+all,sonar,sonarqube
 
 ### Csharp ###
 ## Ignore Visual Studio temporary files, build results, and
@@ -592,6 +592,23 @@ Temporary Items
 
 # Android studio 3.1+ serialized cache file
 
+### Sonar ###
+#Sonar generated dir
+/.sonar/
+
+### SonarQube ###
+# SonarQube ignore files.
+#
+# https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner
+# Sonar Scanner working directories
+.sonar/
+.sonarqube/
+.scannerwork/
+
+# http://www.sonarlint.org/commandline/
+# SonarLint working directories, configuration files (including credentials)
+.sonarlint/
+
 ### VisualStudioCode ###
 !.vscode/*.code-snippets
 
@@ -807,4 +824,4 @@ $RECYCLE.BIN/
 ### VisualStudio Patch ###
 # Additional files built by Visual Studio
 
-# End of https://www.toptal.com/developers/gitignore/api/linux,macos,rider,csharp,windows,dotnetcore,visualstudio,visualstudiocode,jetbrains+all
+# End of https://www.toptal.com/developers/gitignore/api/linux,macos,csharp,windows,dotnetcore,visualstudio,visualstudiocode,rider,jetbrains+all,sonar,sonarqube

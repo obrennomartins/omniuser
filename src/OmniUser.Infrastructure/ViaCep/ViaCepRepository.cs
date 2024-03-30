@@ -18,7 +18,10 @@ public class ViaCepRepository : IViaCepRepository
     {
         var resposta = await _httpClient.GetAsync($"/ws/{cep}/json");
 
-        if (!resposta.IsSuccessStatusCode) return null;
+        if (!resposta.IsSuccessStatusCode)
+        {
+            return null;
+        }
 
         var options = new JsonSerializerOptions
         {

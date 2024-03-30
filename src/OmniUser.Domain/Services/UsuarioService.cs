@@ -65,7 +65,10 @@ public sealed class UsuarioService : BaseService, IUsuarioService
             return null;
         }
 
-        if (!VerificaUnicidade(usuario)) return null;
+        if (!VerificaUnicidade(usuario))
+        {
+            return null;
+        }
 
         usuarioDb.Nome = usuario.Nome;
         usuarioDb.Documento = usuario.Documento;
@@ -153,11 +156,17 @@ public sealed class UsuarioService : BaseService, IUsuarioService
         if (usuarioExistente is not null)
         {
             if (usuario.Documento is not null && usuarioExistente.Documento == usuario.Documento)
+            {
                 Notificar("Já existe um usuário com o documento informado.");
+            }
             else if (usuario.Email is not null && usuarioExistente.Email == usuario.Email)
+            {
                 Notificar("Já existe um usuário com o e-mail informado.");
+            }
             else if (usuario.Telefone is not null && usuarioExistente.Telefone == usuario.Telefone)
+            {
                 Notificar("Já existe um usuário com o telefone informado.");
+            }
 
             return false;
         }

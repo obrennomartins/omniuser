@@ -16,6 +16,16 @@ public class RegistroAuditoriaRepository : IRegistroAuditoriaRepository
         _db = db;
     }
 
+    public async Task<RegistroAuditoria?> Obter(int id)
+    {
+        return await _baseRepository.Obter(id);
+    }
+
+    public async Task<IEnumerable<RegistroAuditoria?>> ObterTodos()
+    {
+        return await _baseRepository.ObterTodos();
+    }
+
     public void Dispose()
     {
         Dispose(true);
@@ -36,15 +46,5 @@ public class RegistroAuditoriaRepository : IRegistroAuditoriaRepository
         }
 
         _disposed = true;
-    }
-
-    public async Task<RegistroAuditoria?> Obter(int id)
-    {
-        return await _baseRepository.Obter(id);
-    }
-
-    public async Task<IEnumerable<RegistroAuditoria?>> ObterTodos()
-    {
-        return await _baseRepository.ObterTodos();
     }
 }

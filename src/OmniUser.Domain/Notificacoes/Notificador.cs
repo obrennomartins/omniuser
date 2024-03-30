@@ -2,19 +2,14 @@ namespace OmniUser.Domain.Notificacoes;
 
 public class Notificador : INotificador
 {
-    private readonly List<Notificacao> _notificacoes;
-
-    public Notificador()
-    {
-        _notificacoes = new List<Notificacao>();
-    }
+    private readonly List<Notificacao> _notificacoes = new();
 
     public void Handle(Notificacao notificacao)
     {
         _notificacoes.Add(notificacao);
     }
 
-    public List<Notificacao> ObterNotificacoes()
+    public IEnumerable<Notificacao> ObterNotificacoes()
     {
         return _notificacoes;
     }

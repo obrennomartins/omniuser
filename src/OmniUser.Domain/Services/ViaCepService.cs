@@ -27,7 +27,7 @@ public sealed class ViaCepService : BaseService, IViaCepService
         // ReSharper disable once InvertIf
         if (resposta?.Cep is null)
         {
-            Notificar("Houve um problema ao obter as informações do CEP");
+            Notificar("Houve um problema ao obter as informações do CEP. Verifique se ele é válido.");
             return null;
         }
 

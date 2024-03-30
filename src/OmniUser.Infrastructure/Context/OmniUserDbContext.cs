@@ -48,12 +48,12 @@ public class OmniUserDbContext : DbContext
         foreach (var registroAuditoria in entityEntries
                      .Where(e => e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted)
                      .Select(entidadeModificada => new RegistroAuditoria
-                         {
-                             Entidade = entidadeModificada.Entity.GetType().Name,
-                             Acao = entidadeModificada.State.ToString(),
-                             Timestamp = DateTime.Now,
-                             Alteracoes = GetChanges(entidadeModificada)
-                         }))
+                     {
+                         Entidade = entidadeModificada.Entity.GetType().Name,
+                         Acao = entidadeModificada.State.ToString(),
+                         Timestamp = DateTime.Now,
+                         Alteracoes = GetChanges(entidadeModificada)
+                     }))
         {
             RegistrosAuditoria.Add(registroAuditoria);
         }

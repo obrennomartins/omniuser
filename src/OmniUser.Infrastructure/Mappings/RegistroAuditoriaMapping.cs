@@ -11,15 +11,18 @@ public class RegistroAuditoriaMapping : IEntityTypeConfiguration<RegistroAuditor
         builder.HasKey(registro => registro.Id);
 
         builder.Property(registro => registro.Usuario)
-            .HasColumnType("text");
+            .HasColumnType("text")
+            .HasMaxLength(100);
 
         builder.Property(registro => registro.Entidade)
             .IsRequired()
-            .HasColumnType("text");
+            .HasColumnType("text")
+            .HasMaxLength(100);
 
         builder.Property(registro => registro.Acao)
             .IsRequired()
-            .HasColumnType("text");
+            .HasColumnType("text")
+            .HasMaxLength(100);
 
         builder.Property(registro => registro.Timestamp)
             .IsRequired()
@@ -27,6 +30,7 @@ public class RegistroAuditoriaMapping : IEntityTypeConfiguration<RegistroAuditor
 
         builder.Property(registro => registro.Alteracoes)
             .IsRequired()
-            .HasColumnType("text");
+            .HasColumnType("text")
+            .HasMaxLength(10000);
     }
 }

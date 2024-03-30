@@ -44,7 +44,7 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
 
     public async Task<bool> Remover(int id)
     {
-        _dbSet.Remove(new TEntity {Id = id});
+        _dbSet.Remove(new TEntity { Id = id });
         return await SalvarAlteracoesAsync();
     }
 

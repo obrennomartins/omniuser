@@ -4,13 +4,8 @@ using OmniUser.Domain.Models;
 
 namespace OmniUser.Tests.Fixtures;
 
-public class UsuarioTestsFixture : IDisposable
+public sealed class UsuarioTestsFixture : IDisposable
 {
-    public void Dispose()
-    {
-        GC.SuppressFinalize(this);
-    }
-
     public Usuario GerarUsuario()
     {
         var usuario = new Faker<Usuario>("pt_BR")
@@ -71,7 +66,7 @@ public class UsuarioTestsFixture : IDisposable
     public Usuario GerarUsuarioInvalido_EmailInvalido()
     {
         var usuario = GerarUsuario();
-        usuario.Email = "emailinvalido";
+        usuario.Email = "emailInvalido";
 
         return usuario;
     }
@@ -146,5 +141,15 @@ public class UsuarioTestsFixture : IDisposable
         usuario.Documento = new Faker().Random.String2(21);
 
         return usuario;
+    }
+
+    ~UsuarioTestsFixture()
+    {
+        Dispose();
+    }
+    
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
     }
 }

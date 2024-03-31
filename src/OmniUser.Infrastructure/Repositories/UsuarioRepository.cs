@@ -6,7 +6,7 @@ using OmniUser.Infrastructure.Context;
 
 namespace OmniUser.Infrastructure.Repositories;
 
-public class UsuarioRepository : IUsuarioRepository
+public sealed class UsuarioRepository : IUsuarioRepository
 {
     private readonly IBaseRepository<Usuario> _baseRepository;
     private readonly OmniUserDbContext _db;
@@ -67,7 +67,12 @@ public class UsuarioRepository : IUsuarioRepository
         GC.SuppressFinalize(this);
     }
 
-    protected virtual void Dispose(bool disposing)
+    ~UsuarioRepository()
+    {
+        Dispose();
+    }
+
+    private void Dispose(bool disposing)
     {
         if (_disposed)
         {

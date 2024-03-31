@@ -4,7 +4,7 @@ using OmniUser.Infrastructure.Context;
 
 namespace OmniUser.Infrastructure.Repositories;
 
-public class RegistroAuditoriaRepository : IRegistroAuditoriaRepository
+public sealed class RegistroAuditoriaRepository : IRegistroAuditoriaRepository
 {
     private readonly IBaseRepository<RegistroAuditoria> _baseRepository;
     private readonly OmniUserDbContext _db;
@@ -32,7 +32,12 @@ public class RegistroAuditoriaRepository : IRegistroAuditoriaRepository
         GC.SuppressFinalize(this);
     }
 
-    protected virtual void Dispose(bool disposing)
+    ~RegistroAuditoriaRepository()
+    {
+        Dispose();
+    }
+
+    private void Dispose(bool disposing)
     {
         if (_disposed)
         {

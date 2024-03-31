@@ -20,8 +20,8 @@ public class OmniUserDbContext : DbContext
         _configuration = configuration;
     }
 
-    public DbSet<Usuario> Usuarios { get; set; } = default!;
-    public DbSet<RegistroAuditoria> RegistrosAuditoria { get; set; } = default!;
+    public DbSet<Usuario> Usuarios { get; init; } = default!;
+    public DbSet<RegistroAuditoria> RegistrosAuditoria { get; init; } = default!;
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

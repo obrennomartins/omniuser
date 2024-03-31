@@ -6,7 +6,7 @@ using OmniUser.Infrastructure.Context;
 
 namespace OmniUser.Infrastructure.Repositories;
 
-public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : BaseEntity, new()
+public sealed class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : BaseEntity, new()
 {
     private readonly OmniUserDbContext _db;
     private readonly DbSet<TEntity> _dbSet;
@@ -69,12 +69,17 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
         GC.SuppressFinalize(this);
     }
 
+    ~BaseRepository()
+    {
+        Dispose();
+    }
+
     private async Task<bool> SalvarAlteracoesAsync()
     {
         return await _db.SaveChangesAsync() > 0;
     }
 
-    protected virtual void Dispose(bool disposing)
+    private void Dispose(bool disposing)
     {
         if (_disposed)
         {

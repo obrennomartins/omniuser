@@ -22,7 +22,7 @@ public class Endereco : BaseEntity
         Usuario = usuario;
     }
 
-    public int UsuarioId { get; set; }
+    public int UsuarioId { get; init; }
 
     public string Logradouro { get; set; } = null!;
     public string Numero { get; set; } = null!;
@@ -32,7 +32,7 @@ public class Endereco : BaseEntity
     public string Cidade { get; set; } = null!;
     public string Uf { get; set; } = null!;
 
-    public Usuario Usuario { get; set; } = null!;
+    public Usuario Usuario { get; init; } = null!;
 
     public override bool EhValido()
     {

@@ -9,7 +9,7 @@ builder.ConfigureWebJobs(b =>
     b.AddAzureStorageBlobs();
     b.AddAzureStorageQueues();
 });
-builder.ConfigureLogging((context, b) => { b.AddConsole(); });
+builder.ConfigureLogging((_, b) => { b.AddConsole(); });
 
 
 var host = builder.Build();

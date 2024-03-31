@@ -3,7 +3,7 @@ using OmniUser.Domain.Models;
 
 namespace OmniUser.Infrastructure.Repositories;
 
-public class EnderecoRepository : IEnderecoRepository
+public sealed class EnderecoRepository : IEnderecoRepository
 {
     private readonly IBaseRepository<Endereco> _baseRepository;
     private bool _disposed;
@@ -44,7 +44,12 @@ public class EnderecoRepository : IEnderecoRepository
         GC.SuppressFinalize(this);
     }
 
-    protected virtual void Dispose(bool disposing)
+    ~EnderecoRepository()
+    {
+        Dispose();
+    }
+
+    private void Dispose(bool disposing)
     {
         if (_disposed)
         {

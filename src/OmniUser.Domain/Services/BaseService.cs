@@ -34,7 +34,7 @@ public abstract class BaseService
         _notificador.Handle(new Notificacao(mensagem));
     }
 
-    protected void Notificar(ValidationResult validationResult)
+    private void Notificar(ValidationResult validationResult)
     {
         foreach (var error in validationResult.Errors)
         {

@@ -13,7 +13,7 @@ public sealed class UsuarioTestsFixture : IDisposable
                 faker.Name.FirstName(),
                 "",
                 new string(faker.Phone.PhoneNumber().Replace("+55", "").Where(char.IsDigit).ToArray()),
-                faker.Person.Cpf(),
+                new string(faker.Person.Cpf().Where(char.IsDigit).ToArray()),
                 null,
                 true
             )).RuleFor(u => u.Email, (f, u) =>
@@ -106,7 +106,7 @@ public sealed class UsuarioTestsFixture : IDisposable
     public Usuario GerarUsuarioInvalido_TelefoneMaior11()
     {
         var usuario = GerarUsuario();
-        usuario.Telefone = new Faker().Random.String2(12);
+        usuario.Telefone = new Faker().Random.String2(12, "1234567890");
 
         return usuario;
     }
@@ -138,7 +138,7 @@ public sealed class UsuarioTestsFixture : IDisposable
     public Usuario GerarUsuarioInvalido_DocumentoMaior20()
     {
         var usuario = GerarUsuario();
-        usuario.Documento = new Faker().Random.String2(21);
+        usuario.Documento = new Faker().Random.String2(21, "1234567890");
 
         return usuario;
     }

@@ -18,7 +18,7 @@ public class EnderecoTests
     }
 
     [Fact(DisplayName = "Novo Endereco Válido")]
-    [Trait("Categoria", "Model - Endereco")]
+    [Trait("Category", "Model - Endereco")]
     public void Endereco_NovoEndereco_DeveEstarValido()
     {
         // Arrange
@@ -34,7 +34,7 @@ public class EnderecoTests
     }
 
     [Fact(DisplayName = "Novo Endereco inválido (Logradouro Vazio)")]
-    [Trait("Categoria", "Model - Endereco")]
+    [Trait("Category", "Model - Endereco")]
     public void Endereco_NovoEnderecoLogradouroVazio_DeveEstarInvalido()
     {
         // Arrange
@@ -51,7 +51,7 @@ public class EnderecoTests
     }
 
     [Fact(DisplayName = "Novo Endereco inválido (Logradouro < 2)")]
-    [Trait("Categoria", "Model - Endereco")]
+    [Trait("Category", "Model - Endereco")]
     public void Endereco_NovoEnderecoLogradouroMenor2_DeveEstarInvalido()
     {
         // Arrange
@@ -68,7 +68,7 @@ public class EnderecoTests
     }
 
     [Fact(DisplayName = "Novo Endereco inválido (Logradouro > 200)")]
-    [Trait("Categoria", "Model - Endereco")]
+    [Trait("Category", "Model - Endereco")]
     public void Endereco_NovoEnderecoLogradouroMaior100_DeveEstarInvalido()
     {
         // Arrange
@@ -85,7 +85,7 @@ public class EnderecoTests
     }
 
     [Fact(DisplayName = "Novo Endereco inválido (Numero Vazio)")]
-    [Trait("Categoria", "Model - Endereco")]
+    [Trait("Category", "Model - Endereco")]
     public void Endereco_NovoEnderecoNumeroVazio_DeveEstarInvalido()
     {
         // Arrange
@@ -102,7 +102,7 @@ public class EnderecoTests
     }
 
     [Fact(DisplayName = "Novo Endereco inválido (Numero > 20)")]
-    [Trait("Categoria", "Model - Endereco")]
+    [Trait("Category", "Model - Endereco")]
     public void Endereco_NovoEnderecoNumeroMaior20_DeveEstarInvalido()
     {
         // Arrange
@@ -119,7 +119,7 @@ public class EnderecoTests
     }
 
     [Fact(DisplayName = "Novo Endereco válido (Complemento nulo)")]
-    [Trait("Categoria", "Model - Endereco")]
+    [Trait("Category", "Model - Endereco")]
     public void Endereco_NovoEnderecoComplementoNulo_DeveEstarValido()
     {
         // Arrange
@@ -135,7 +135,7 @@ public class EnderecoTests
     }
 
     [Fact(DisplayName = "Novo Endereço válido (Complemento vazio)")]
-    [Trait("Categoria", "Model - Endereco")]
+    [Trait("Category", "Model - Endereco")]
     public void Endereco_NovoEnderecoComplementoVazio_DeveEstarValido()
     {
         // Arrange
@@ -151,7 +151,7 @@ public class EnderecoTests
     }
 
     [Fact(DisplayName = "Novo Endereco inválido (Complemento > 100)")]
-    [Trait("Categoria", "Model - Endereco")]
+    [Trait("Category", "Model - Endereco")]
     public void Endereco_NovoEnderecoComplementoMaior100_DeveEstarInvalido()
     {
         // Arrange
@@ -168,7 +168,7 @@ public class EnderecoTests
     }
 
     [Fact(DisplayName = "Novo Endereco inválido (CEP vazio)")]
-    [Trait("Categoria", "Model - Endereco")]
+    [Trait("Category", "Model - Endereco")]
     public void Endereco_NovoEnderecoCepVazio_DeveEstarInvalido()
     {
         // Arrange
@@ -185,7 +185,7 @@ public class EnderecoTests
     }
 
     [Fact(DisplayName = "Novo Endereco inválido (CEP < 8)")]
-    [Trait("Categoria", "Model - Endereco")]
+    [Trait("Category", "Model - Endereco")]
     public void Endereco_NovoEnderecoCepMenor8_DeveEstarInvalido()
     {
         // Arrange
@@ -202,7 +202,7 @@ public class EnderecoTests
     }
 
     [Fact(DisplayName = "Novo Endereco inválido (CEP > 8)")]
-    [Trait("Categoria", "Model - Endereco")]
+    [Trait("Category", "Model - Endereco")]
     public void Endereco_NovoEnderecoCepMaior8_DeveEstarInvalido()
     {
         // Arrange
@@ -219,7 +219,7 @@ public class EnderecoTests
     }
 
     [Fact(DisplayName = "Novo Endereco inválido (CEP com letras)")]
-    [Trait("Categoria", "Model - Endereco")]
+    [Trait("Category", "Model - Endereco")]
     public void Endereco_NovoEnderecoCepLetras_DeveEstarInvalido()
     {
         // Arrange
@@ -236,7 +236,7 @@ public class EnderecoTests
     }
 
     [Fact(DisplayName = "Novo Endereco inválido (Bairro Vazio)")]
-    [Trait("Categoria", "Model - Endereco")]
+    [Trait("Category", "Model - Endereco")]
     public void Endereco_NovoEnderecoBairroVazio_DeveEstarInvalido()
     {
         // Arrange
@@ -253,7 +253,7 @@ public class EnderecoTests
     }
 
     [Fact(DisplayName = "Novo Endereco inválido (Bairro < 2)")]
-    [Trait("Categoria", "Model - Endereco")]
+    [Trait("Category", "Model - Endereco")]
     public void Endereco_NovoEnderecoBairroMenor2_DeveEstarInvalido()
     {
         // Arrange
@@ -270,7 +270,7 @@ public class EnderecoTests
     }
 
     [Fact(DisplayName = "Novo Endereco inválido (Bairro > 50)")]
-    [Trait("Categoria", "Model - Endereco")]
+    [Trait("Category", "Model - Endereco")]
     public void Endereco_NovoEnderecoBairroMaior50_DeveEstarInvalido()
     {
         // Arrange
@@ -287,7 +287,7 @@ public class EnderecoTests
     }
 
     [Fact(DisplayName = "Novo Endereco inválido (Cidade vazio)")]
-    [Trait("Categoria", "Model - Endereco")]
+    [Trait("Category", "Model - Endereco")]
     public void Endereco_NovoEnderecoCidadeVazio_DeveEstarInvalido()
     {
         // Arrange
@@ -304,7 +304,7 @@ public class EnderecoTests
     }
 
     [Fact(DisplayName = "Novo Endereco inválido (Cidade < 2)")]
-    [Trait("Categoria", "Model - Endereco")]
+    [Trait("Category", "Model - Endereco")]
     public void Endereco_NovoEnderecoCidadeMenor2_DeveEstarInvalido()
     {
         // Arrange
@@ -321,7 +321,7 @@ public class EnderecoTests
     }
 
     [Fact(DisplayName = "Novo Endereco inválido (Cidade > 50)")]
-    [Trait("Categoria", "Model - Endereco")]
+    [Trait("Category", "Model - Endereco")]
     public void Endereco_NovoEnderecoCidadeMaior50_DeveEstarInvalido()
     {
         // Arrange
@@ -338,7 +338,7 @@ public class EnderecoTests
     }
 
     [Fact(DisplayName = "Novo Endereco inválido (Uf vazia)")]
-    [Trait("Categoria", "Model - Endereco")]
+    [Trait("Category", "Model - Endereco")]
     public void Endereco_NovoEnderecoUFVazia_DeveEstarInvalido()
     {
         // Arrange
@@ -355,7 +355,7 @@ public class EnderecoTests
     }
 
     [Fact(DisplayName = "Novo Endereco inválido (Uf < 2)")]
-    [Trait("Categoria", "Model - Endereco")]
+    [Trait("Category", "Model - Endereco")]
     public void Endereco_NovoEnderecoUFMenor2_DeveEstarInvalido()
     {
         // Arrange
@@ -372,7 +372,7 @@ public class EnderecoTests
     }
 
     [Fact(DisplayName = "Novo Endereco inválido (Uf > 20)")]
-    [Trait("Categoria", "Model - Endereco")]
+    [Trait("Category", "Model - Endereco")]
     public void Endereco_NovoEnderecoUFMaior20_DeveEstarInvalido()
     {
         // Arrange

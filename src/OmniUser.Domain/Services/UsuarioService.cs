@@ -159,11 +159,13 @@ public sealed class UsuarioService : BaseService, IUsuarioService
             {
                 Notificar("Já existe um usuário com o documento informado.");
             }
-            else if (usuario.Email is not null && usuarioExistente.Email == usuario.Email)
+            
+            if (usuario.Email is not null && usuarioExistente.Email == usuario.Email)
             {
                 Notificar("Já existe um usuário com o e-mail informado.");
             }
-            else if (usuario.Telefone is not null && usuarioExistente.Telefone == usuario.Telefone)
+            
+            if (usuario.Telefone is not null && usuarioExistente.Telefone == usuario.Telefone)
             {
                 Notificar("Já existe um usuário com o telefone informado.");
             }

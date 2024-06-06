@@ -22,7 +22,7 @@ public class Usuario : BaseEntity
     public string? Email { get; set; }
     public string? Telefone { get; set; }
     public string? Documento { get; set; }
-    public Endereco? Endereco { get; init; }
+    public Endereco? Endereco { get; set; }
     public bool Ativo { get; set; }
 
     public override bool EhValido()

@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 
 namespace OmniUser.Jobs;
 
-public class Functions
+public static class Functions
 {
     public static void ProcessQueueMessage([QueueTrigger("queue")] string message, ILogger logger)
     {

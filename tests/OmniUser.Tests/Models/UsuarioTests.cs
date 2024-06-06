@@ -1,11 +1,7 @@
+using OmniUser.Tests.Collections;
 using OmniUser.Tests.Fixtures;
 
 namespace OmniUser.Tests.Models;
-
-[CollectionDefinition(nameof(UsuarioCollection))]
-public class UsuarioCollection : ICollectionFixture<UsuarioTestsFixture>
-{
-}
 
 [Collection(nameof(UsuarioCollection))]
 public class UsuarioTests
@@ -22,7 +18,7 @@ public class UsuarioTests
     public void Usuario_NovoUsuario_DeveEstarValido()
     {
         // Arrange
-        var usuario = _usuarioTestsFixture.GerarUsuario();
+        var usuario = _usuarioTestsFixture.GerarUsuarioValido();
 
         // Act
         var valido = usuario.EhValido();

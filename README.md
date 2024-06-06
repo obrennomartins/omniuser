@@ -1,4 +1,4 @@
-# [OmniUser]()
+# OmniUser
 
 > Um projeto de estimação em C#
 

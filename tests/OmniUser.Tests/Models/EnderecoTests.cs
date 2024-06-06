@@ -1,11 +1,7 @@
+using OmniUser.Tests.Collections;
 using OmniUser.Tests.Fixtures;
 
 namespace OmniUser.Tests.Models;
-
-[CollectionDefinition(nameof(EnderecoCollection))]
-public class EnderecoCollection : ICollectionFixture<EnderecoTestsFixture>
-{
-}
 
 [Collection(nameof(EnderecoCollection))]
 public class EnderecoTests
@@ -22,7 +18,7 @@ public class EnderecoTests
     public void Endereco_NovoEndereco_DeveEstarValido()
     {
         // Arrange
-        var endereco = _enderecoTestsFixture.GerarEndereco();
+        var endereco = _enderecoTestsFixture.GerarEnderecoValido();
 
         // Act
         var valido = endereco.EhValido();

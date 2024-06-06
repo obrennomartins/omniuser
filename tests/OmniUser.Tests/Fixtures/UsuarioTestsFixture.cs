@@ -6,7 +6,7 @@ namespace OmniUser.Tests.Fixtures;
 
 public sealed class UsuarioTestsFixture : IDisposable
 {
-    public Usuario GerarUsuario()
+    public Usuario GerarUsuarioValido()
     {
         var usuario = new Faker<Usuario>("pt_BR")
             .CustomInstantiator(faker => new Usuario(
@@ -23,9 +23,21 @@ public sealed class UsuarioTestsFixture : IDisposable
         return usuario;
     }
 
+    public Usuario GerarUsuarioInvalido()
+    {
+        var usuario = GerarUsuarioValido();
+
+        usuario.Nome = string.Empty;
+        usuario.Email = null;
+        usuario.Telefone = null;
+        usuario.Documento = null;
+
+        return usuario;
+    }
+
     public Usuario GerarUsuarioInvalido_NomeVazio()
     {
-        var usuario = GerarUsuario();
+        var usuario = GerarUsuarioValido();
         usuario.Nome = string.Empty;
 
         return usuario;
@@ -33,7 +45,7 @@ public sealed class UsuarioTestsFixture : IDisposable
 
     public Usuario GerarUsuarioInvalido_NomeMenor2()
     {
-        var usuario = GerarUsuario();
+        var usuario = GerarUsuarioValido();
         usuario.Nome = usuario.Nome[..1];
 
         return usuario;
@@ -41,7 +53,7 @@ public sealed class UsuarioTestsFixture : IDisposable
 
     public Usuario GerarUsuarioInvalido_NomeMaior100()
     {
-        var usuario = GerarUsuario();
+        var usuario = GerarUsuarioValido();
         usuario.Nome = new Faker().Random.String2(101);
 
         return usuario;
@@ -49,7 +61,7 @@ public sealed class UsuarioTestsFixture : IDisposable
 
     public Usuario GerarUsuarioValido_EmailNulo()
     {
-        var usuario = GerarUsuario();
+        var usuario = GerarUsuarioValido();
         usuario.Email = null;
 
         return usuario;
@@ -57,7 +69,7 @@ public sealed class UsuarioTestsFixture : IDisposable
 
     public Usuario GerarUsuarioInvalido_EmailVazio()
     {
-        var usuario = GerarUsuario();
+        var usuario = GerarUsuarioValido();
         usuario.Email = string.Empty;
 
         return usuario;
@@ -65,7 +77,7 @@ public sealed class UsuarioTestsFixture : IDisposable
 
     public Usuario GerarUsuarioInvalido_EmailInvalido()
     {
-        var usuario = GerarUsuario();
+        var usuario = GerarUsuarioValido();
         usuario.Email = "emailInvalido";
 
         return usuario;
@@ -73,7 +85,7 @@ public sealed class UsuarioTestsFixture : IDisposable
 
     public Usuario GerarUsuarioInvalido_EmailMaior100()
     {
-        var usuario = GerarUsuario();
+        var usuario = GerarUsuarioValido();
         usuario.Email = new Faker().Random.String2(101) + usuario.Email;
 
         return usuario;
@@ -81,7 +93,7 @@ public sealed class UsuarioTestsFixture : IDisposable
 
     public Usuario GerarUsuarioValido_TelefoneNulo()
     {
-        var usuario = GerarUsuario();
+        var usuario = GerarUsuarioValido();
         usuario.Telefone = null;
 
         return usuario;
@@ -89,7 +101,7 @@ public sealed class UsuarioTestsFixture : IDisposable
 
     public Usuario GerarUsuarioInvalido_TelefoneVazio()
     {
-        var usuario = GerarUsuario();
+        var usuario = GerarUsuarioValido();
         usuario.Telefone = string.Empty;
 
         return usuario;
@@ -97,7 +109,7 @@ public sealed class UsuarioTestsFixture : IDisposable
 
     public Usuario GerarUsuarioInvalido_TelefoneMenor10()
     {
-        var usuario = GerarUsuario();
+        var usuario = GerarUsuarioValido();
         usuario.Telefone = usuario.Telefone?[..9];
 
         return usuario;
@@ -105,7 +117,7 @@ public sealed class UsuarioTestsFixture : IDisposable
 
     public Usuario GerarUsuarioInvalido_TelefoneMaior11()
     {
-        var usuario = GerarUsuario();
+        var usuario = GerarUsuarioValido();
         usuario.Telefone = new Faker().Random.String2(12, "1234567890");
 
         return usuario;
@@ -113,7 +125,7 @@ public sealed class UsuarioTestsFixture : IDisposable
 
     public Usuario GerarUsuarioValido_DocumentoNulo()
     {
-        var usuario = GerarUsuario();
+        var usuario = GerarUsuarioValido();
         usuario.Documento = null;
 
         return usuario;
@@ -121,7 +133,7 @@ public sealed class UsuarioTestsFixture : IDisposable
 
     public Usuario GerarUsuarioInvalido_DocumentoVazio()
     {
-        var usuario = GerarUsuario();
+        var usuario = GerarUsuarioValido();
         usuario.Documento = string.Empty;
 
         return usuario;
@@ -129,7 +141,7 @@ public sealed class UsuarioTestsFixture : IDisposable
 
     public Usuario GerarUsuarioInvalido_DocumentoLetras()
     {
-        var usuario = GerarUsuario();
+        var usuario = GerarUsuarioValido();
         usuario.Documento += "a";
 
         return usuario;
@@ -137,7 +149,7 @@ public sealed class UsuarioTestsFixture : IDisposable
 
     public Usuario GerarUsuarioInvalido_DocumentoMaior20()
     {
-        var usuario = GerarUsuario();
+        var usuario = GerarUsuarioValido();
         usuario.Documento = new Faker().Random.String2(21, "1234567890");
 
         return usuario;

@@ -141,7 +141,7 @@ public sealed class UsuarioService : BaseService, IUsuarioService
     }
 
     /// <summary>
-    ///     Verifica se o documento, o e-mail e o telefone do <see cref="Usuario" /> são únicos. Se não forem, notifica.
+    /// Verifica se o documento, o e-mail e o telefone do <see cref="Usuario" /> são únicos. Se não forem, notifica.
     /// </summary>
     /// <param name="usuario">O Usuário a ser verificado.</param>
     /// <returns>Retorna true se ele for único, false caso contrário.</returns>

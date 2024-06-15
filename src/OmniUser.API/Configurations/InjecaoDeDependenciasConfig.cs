@@ -23,7 +23,7 @@ public static class InjecaoDeDependenciasConfig
         services.AddHttpClient<IViaCepRepository, ViaCepRepository>(client =>
         {
             client.BaseAddress = new Uri("https://viacep.com.br/");
-        });
+        }).AddStandardResilienceHandler();
         services.AddScoped<IViaCepService, ViaCepService>();
     }
 }

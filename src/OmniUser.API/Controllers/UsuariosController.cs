@@ -87,7 +87,7 @@ public class UsuariosController : BaseController
     public async Task<ActionResult<UsuarioViewModel>> ObterPorId(int id)
     {
         var usuario = _mapper.Map<UsuarioViewModel>(await _repository.ObterUsuarioComEndereco(id));
-        return usuario == null ? NotFound() : CustomResponse(usuario);
+        return CustomResponse(usuario);
     }
 
     /// <summary>
@@ -216,7 +216,7 @@ public class UsuariosController : BaseController
             });
         }
 
-        return CustomResponse();
+        return CustomResponse(sucesso);
     }
 
     /// <summary>
@@ -249,6 +249,6 @@ public class UsuariosController : BaseController
             });
         }
 
-        return CustomResponse();
+        return CustomResponse(sucesso);
     }
 }

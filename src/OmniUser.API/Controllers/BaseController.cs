@@ -20,16 +20,21 @@ public abstract class BaseController : Controller
 
     protected ActionResult CustomResponse(object? result = null)
     {
-        if (OperacaoValida())
+        if (!OperacaoValida())
         {
-            return Ok(result);
+            return BadRequest(new
+            {
+                success = false,
+                errors = _notificador.ObterNotificacoes().Select(n => n.Mensagem)
+            });
         }
 
-        return BadRequest(new
+        if (result is null)
         {
-            success = false,
-            errors = _notificador.ObterNotificacoes().Select(n => n.Mensagem)
-        });
+            return NotFound();
+        }
+
+        return Ok(result);
     }
 
     protected ActionResult CustomResponse(ModelStateDictionary modelState)

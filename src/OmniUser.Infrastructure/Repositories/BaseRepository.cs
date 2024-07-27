@@ -6,7 +6,7 @@ using OmniUser.Infrastructure.Context;
 
 namespace OmniUser.Infrastructure.Repositories;
 
-public sealed class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : BaseEntity, new()
+public sealed class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : EntidadeBase, new()
 {
     private readonly OmniUserDbContext _db;
     private readonly DbSet<TEntity> _dbSet;

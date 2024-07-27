@@ -9,7 +9,7 @@ public class Architecture
     public void CamadaDomain_NaoDeveTerDependenciaEm_CamadaApi()
     {
         // Arrange
-        var domainAssembly = typeof(Domain.Models.BaseEntity).Assembly;
+        var domainAssembly = typeof(Domain.Models.EntidadeBase).Assembly;
         var apiAssembly = typeof(API.Configurations.InjecaoDeDependenciasConfig).Assembly;
 
         // Act

@@ -15,7 +15,7 @@ public abstract class BaseService
     }
 
     protected bool ExecutarValidacao<TV, TE>(TV validacao, TE entidade)
-        where TV : AbstractValidator<TE> where TE : BaseEntity
+        where TV : AbstractValidator<TE> where TE : EntidadeBase
     {
         var validator = validacao.Validate(entidade);
 

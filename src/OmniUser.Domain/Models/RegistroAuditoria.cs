@@ -1,6 +1,6 @@
 namespace OmniUser.Domain.Models;
 
-public class RegistroAuditoria : BaseEntity
+public class RegistroAuditoria : EntidadeRastreada
 {
     public string? Usuario { get; init; }
     public string Entidade { get; init; } = null!;

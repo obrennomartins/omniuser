@@ -3,7 +3,7 @@ using OmniUser.Domain.Models;
 
 namespace OmniUser.Domain.Interfaces;
 
-public interface IBaseRepository<TEntity> : IDisposable where TEntity : BaseEntity
+public interface IBaseRepository<TEntity> : IDisposable where TEntity : EntidadeBase
 {
     Task<TEntity?> Adicionar(TEntity entity);
     Task<TEntity?> Atualizar(TEntity entity);

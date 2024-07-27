@@ -2,7 +2,7 @@ using OmniUser.Domain.Models.Validations;
 
 namespace OmniUser.Domain.Models;
 
-public class Endereco : BaseEntity
+public class Endereco : EntidadeRastreada
 {
     public Endereco()
     {

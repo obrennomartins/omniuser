@@ -33,35 +33,75 @@ public class OmniUserDbContext : DbContext
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(OmniUserDbContext).Assembly);
     }
 
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
+        var agora = DateTime.Now;
         var entityEntries = ChangeTracker.Entries().ToList();
 
-        foreach (var entry in entityEntries.Where(entry => entry.Entity.GetType().GetProperty("CriadoEm") != null))
+        foreach (var entry in entityEntries)
         {
-            if (entry.State == EntityState.Added)
+            if (entry.Entity is EntidadeRastreada entidadeRastreada)
             {
-                entry.Property("CriadoEm").CurrentValue = DateTime.Now;
+                switch (entry.State)
+                {
+                    case EntityState.Added:
+                        entidadeRastreada.DefinirDataDeCriacao(agora);
+                        entidadeRastreada.DefinirDataDeAtualizacao(agora);
+                        break;
+                    case EntityState.Modified:
+                        entidadeRastreada.DefinirDataDeAtualizacao(agora);
+                        break;
+
+                    case EntityState.Detached:
+                    case EntityState.Unchanged:
+                    case EntityState.Deleted:
+                    default:
+                        break;
+                }
+            }
+
+            // ReSharper disable once InvertIf
+            if (entry.State is EntityState.Added or EntityState.Modified or EntityState.Deleted)
+            {
+                var registroAuditoria = new RegistroAuditoria
+                {
+                    Entidade = entry.Entity.GetType().Name,
+                    Acao = entry.State.ToString(),
+                    Timestamp = agora,
+                    Alteracoes = ObterMudancas(entry)
+                };
+
+                RegistrosAuditoria.Add(registroAuditoria);
             }
         }
 
-        foreach (var registroAuditoria in entityEntries
-                     .Where(e => e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted)
-                     .Select(entidadeModificada => new RegistroAuditoria
-                     {
-                         Entidade = entidadeModificada.Entity.GetType().Name,
-                         Acao = entidadeModificada.State.ToString(),
-                         Timestamp = DateTime.Now,
-                         Alteracoes = GetChanges(entidadeModificada)
-                     }))
-        {
-            RegistrosAuditoria.Add(registroAuditoria);
-        }
+        return await base.SaveChangesAsync(cancellationToken);
 
-        return base.SaveChangesAsync(cancellationToken);
+        // foreach (var entry in entityEntries.Where(entry => entry.Entity.GetType().GetProperty("CriadoEm") != null))
+        // {
+        //     if (entry.State == EntityState.Added)
+        //     {
+        //         entry.Property("CriadoEm").CurrentValue = DateTime.Now;
+        //     }
+        // }
+        //
+        // foreach (var registroAuditoria in entityEntries
+        //              .Where(e => e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted)
+        //              .Select(entidadeModificada => new RegistroAuditoria
+        //              {
+        //                  Entidade = entidadeModificada.Entity.GetType().Name,
+        //                  Acao = entidadeModificada.State.ToString(),
+        //                  Timestamp = DateTime.Now,
+        //                  Alteracoes = GetChanges(entidadeModificada)
+        //              }))
+        // {
+        //     RegistrosAuditoria.Add(registroAuditoria);
+        // }
+        //
+        // return base.SaveChangesAsync(cancellationToken);
     }
 
-    private static string GetChanges(EntityEntry entidade)
+    private static string ObterMudancas(EntityEntry entidade)
     {
         var alteracoes = new Dictionary<string, object>();
 
@@ -72,19 +112,23 @@ public class OmniUserDbContext : DbContext
 
             if (entidade.State is EntityState.Added)
             {
+                alteracoes[propriedade.Name] = atual ?? string.Empty;
+            }
+            else if (entidade.State is EntityState.Deleted)
+            {
                 alteracoes[propriedade.Name] = original ?? string.Empty;
             }
             else if (!Equals(original, atual))
             {
-                alteracoes[propriedade.Name] = new Dictionary<string, object?>
-                {
-                    { "De", original },
-                    { "Para", atual }
-                };
+                alteracoes[propriedade.Name] = new { De = original, Para = atual };
             }
         }
 
-        alteracoes["Id"] = entidade.OriginalValues.GetValue<int>("Id");
+        var id = entidade.Metadata.FindPrimaryKey()?.Properties.FirstOrDefault();
+        if (id is not null)
+        {
+            alteracoes["Id"] = entidade.OriginalValues.GetValue<int>("Id");
+        }
 
         var retorno = JsonSerializer.Serialize(alteracoes);
         return retorno;

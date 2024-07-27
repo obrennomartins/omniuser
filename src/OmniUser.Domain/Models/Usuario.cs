@@ -2,7 +2,7 @@ using OmniUser.Domain.Models.Validations;
 
 namespace OmniUser.Domain.Models;
 
-public class Usuario : BaseEntity
+public class Usuario : EntidadeRastreada
 {
     public Usuario()
     {

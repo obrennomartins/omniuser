@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using OmniUser.Infrastructure.Context;
@@ -11,9 +12,11 @@ using OmniUser.Infrastructure.Context;
 namespace OmniUser.Infrastructure.Migrations
 {
     [DbContext(typeof(OmniUserDbContext))]
-    partial class OmniUserDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241012181652_RemoveRegistroAuditoria")]
+    partial class RemoveRegistroAuditoria
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,11 +27,11 @@ namespace OmniUser.Infrastructure.Migrations
 
             modelBuilder.Entity("OmniUser.Domain.Models.Endereco", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("Id"));
 
                     b.Property<DateTime>("AtualizadoEm")
                         .HasColumnType("timestamp");
@@ -83,11 +86,11 @@ namespace OmniUser.Infrastructure.Migrations
 
             modelBuilder.Entity("OmniUser.Domain.Models.Usuario", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("Id"));
 
                     b.Property<bool>("Ativo")
                         .HasColumnType("boolean");

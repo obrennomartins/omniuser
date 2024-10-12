@@ -10,6 +10,5 @@ public class AutoMapperConfig : Profile
     {
         CreateMap<Usuario, UsuarioViewModel>().ReverseMap();
         CreateMap<Endereco, EnderecoViewModel>().ReverseMap();
-        CreateMap<RegistroAuditoria, RegistroAuditoriaViewModel>().ReverseMap();
     }
 }

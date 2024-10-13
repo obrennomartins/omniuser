@@ -1,11 +1,6 @@
 version: "1.0"
-
-ide: QDNET
-
+linter: jetbrains/qodana-cdnet:2024.1
 profile:
-  name: qodana.starter
-
-linter: jetbrains/qodana-cdnet:2023.3
-
-dotnet:
-  solution: OmniUser.sln
+  name: qodana.recommended
+include:
+  - name: CheckDependencyLicenses

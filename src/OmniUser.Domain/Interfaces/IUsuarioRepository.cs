@@ -1,59 +1,52 @@
-using System.Linq.Expressions;
+using OmniUser.Domain.Dtos;
 using OmniUser.Domain.Models;
 
 namespace OmniUser.Domain.Interfaces;
 
 public interface IUsuarioRepository : IDisposable
 {
-    /// <summary>
-    /// Adiciona um novo <see cref="Usuario" />.
-    /// </summary>
-    /// <param name="usuario">O usuário a ser adicionado.</param>
-    /// <returns>Uma tarefa que representa a operação assíncrona. Retorna o usuário adicionado.</returns>
+
     Task<Usuario?> Adicionar(Usuario usuario);
 
     /// <summary>
-    /// Atualiza um <see cref="Usuario" /> existente.
+    ///     Adiciona um novo <see cref="Usuario" />.
     /// </summary>
-    /// <param name="entity">O usuário a ser atualizado.</param>
-    /// <returns>Uma tarefa que representa a operação assíncrona. Retorna o usuário atualizado.</returns>
-    Task<Usuario?> Atualizar(Usuario entity);
+    /// <param name="usuario">O usuário a ser adicionado.</param>
+    /// <param name="cancellationToken">O token de cancelamento opcional.</param>
+    /// <returns>Uma tarefa que representa a operação assíncrona. Retorna o usuário adicionado.</returns>
+    Task<Usuario?> Adicionar(Usuario usuario, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Obtém um <see cref="Usuario" /> pelo ID.
+    ///     Atualiza um <see cref="Usuario" /> existente.
+    /// </summary>
+    /// <param name="usuario">O usuário a ser atualizado.</param>
+    /// <param name="cancellationToken">O token de cancelamento opcional.</param>
+    /// <returns>Uma tarefa que representa a operação assíncrona. Retorna o usuário atualizado.</returns>
+    Task<Usuario?> Atualizar(Usuario usuario, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     Obtém um <see cref="Usuario" /> pelo ID.
     /// </summary>
     /// <param name="id">O ID do usuário.</param>
+    /// <param name="cancellationToken">O token de cancelamento opcional.</param>
     /// <returns>
     ///     Uma tarefa que representa a operação assíncrona. Retorna o usuário encontrado ou nulo se não existir.
     /// </returns>
-    Task<Usuario?> Obter(int id);
+    Task<Usuario?> Obter(int id, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Obtém um usuário com endereço pelo ID.
+    ///     Obtém todos os usuários ativos.
     /// </summary>
-    /// <param name="id">O ID do usuário.</param>
-    /// <returns>
-    /// Uma tarefa que representa a operação assíncrona. Retorna o usuário com endereço encontrado ou nulo se não
-    /// existir.
-    /// </returns>
-    Task<Usuario?> ObterUsuarioComEndereco(int id);
-
-    /// <summary>
-    /// Obtém todos os usuários ativos.
-    /// </summary>
+    /// <param name="cancellationToken">O token de cancelamento opcional.</param>
     /// <returns>Uma tarefa que representa a operação assíncrona. Retorna uma coleção de usuários ativos.</returns>
-    Task<IEnumerable<Usuario?>> ObterTodosAtivos();
+    Task<IEnumerable<Usuario?>> ObterTodosAtivos(CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Obtém todos os usuários inativos.
+    ///     Obtém todos os usuários inativos.
     /// </summary>
+    /// <param name="cancellationToken">O token de cancelamento opcional.</param>
     /// <returns>Uma tarefa que representa a operação assíncrona. Retorna uma coleção de usuários inativos.</returns>
-    Task<IEnumerable<Usuario?>> ObterTodosInativos();
+    Task<IEnumerable<Usuario?>> ObterTodosInativos(CancellationToken cancellationToken = default);
 
-    /// <summary>
-    /// Busca usuários com base em um predicado.
-    /// </summary>
-    /// <param name="predicate">O predicado de busca.</param>
-    /// <returns>Uma tarefa que representa a operação assíncrona. Retorna uma coleção de usuários encontrados.</returns>
-    Task<IEnumerable<Usuario?>> Buscar(Expression<Func<Usuario, bool>> predicate);
+    Task<DuplicidadeUsuarioDto?> VerificarDuplicidade(string? email = null, string? telefone = null, string? documento = null, CancellationToken cancellationToken = default);
 }

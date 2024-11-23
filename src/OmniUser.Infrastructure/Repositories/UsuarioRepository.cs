@@ -1,64 +1,149 @@
-using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
+using System.Text;
+using Dapper;
+using OmniUser.Domain.Dtos;
 using OmniUser.Domain.Interfaces;
 using OmniUser.Domain.Models;
-using OmniUser.Infrastructure.Context;
+using OmniUser.Infrastructure.Session;
 
 namespace OmniUser.Infrastructure.Repositories;
 
 public sealed class UsuarioRepository : IUsuarioRepository
 {
-    private readonly IBaseRepository<Usuario> _baseRepository;
-    private readonly OmniUserDbContext _db;
+    private readonly OmniUserDbSession _session;
     private bool _disposed;
 
-    public UsuarioRepository(OmniUserDbContext db, IBaseRepository<Usuario> baseRepository)
+    public UsuarioRepository(OmniUserDbSession session)
     {
-        _baseRepository = baseRepository;
-        _db = db;
+        _session = session;
     }
 
-    public async Task<Usuario?> Adicionar(Usuario usuario)
+    public async Task<Usuario?> Adicionar(Usuario usuario) => await Adicionar(usuario, CancellationToken.None);
+
+    public async Task<Usuario?> Adicionar(Usuario usuario, CancellationToken cancellationToken = default)
     {
-        return await _baseRepository.Adicionar(usuario);
+        const string query = @"
+            INSERT INTO `Usuarios` (`Nome`, `Email`, `Telefone`, `Documento`, `Ativo`, `CriadoEm`, `AtualizadoEm`)
+            VALUES (@Nome, @Email, @Telefone, @Documento, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+            
+            SELECT * FROM Usuarios WHERE Id = LAST_INSERT_ID();
+        ";
+
+        var parameters = new DynamicParameters(new {
+            usuario.Nome,
+            usuario.Email,
+            usuario.Telefone,
+            usuario.Documento
+        });
+
+        var command = new CommandDefinition(query, parameters, _session.Transaction, cancellationToken: cancellationToken);
+        var multi = await _session.Connection.QueryMultipleAsync(command);
+        var usuarioAdicionado = await multi.ReadSingleOrDefaultAsync<Usuario>();
+
+        return usuarioAdicionado;
     }
 
-    public async Task<Usuario?> Atualizar(Usuario entity)
+    public async Task<Usuario?> Atualizar(Usuario usuario, CancellationToken cancellationToken = default)
     {
-        return await _baseRepository.Atualizar(entity);
+        const string query = @"
+            UPDATE `Usuarios`
+            SET
+                Nome = @Nome,
+                Email = @Email,
+                Telefone = @Telefone,
+                Documento = @Documento,
+                Ativo = @Ativo,
+                AtualizadoEm = CURRENT_TIMESTAMP
+            WHERE Id = @Id;
+
+            SELECT * FROM Usuarios WHERE Id = @Id;
+        ";
+
+        var parameters = new DynamicParameters(new {
+            usuario.Id,
+            usuario.Nome,
+            usuario.Email,
+            usuario.Telefone,
+            usuario.Documento,
+            usuario.Ativo
+        });
+
+        var command = new CommandDefinition(query, parameters, _session.Transaction, cancellationToken: cancellationToken);
+        var multi = await _session.Connection.QueryMultipleAsync(command);
+        var usuarioAtualizado = await multi.ReadSingleOrDefaultAsync<Usuario>();
+
+        return usuarioAtualizado;
     }
 
-    public async Task<Usuario?> Obter(int id)
+    public async Task<Usuario?> Obter(int id, CancellationToken cancellationToken = default)
     {
-        return await _baseRepository.Obter(id);
+        const string query = "SELECT * FROM Usuarios WHERE Id = @Id;";
+        var parameters = new DynamicParameters(new { id });
+        var command = new CommandDefinition(query, parameters, _session.Transaction, cancellationToken: cancellationToken);
+        var usuario = await _session.Connection.QueryFirstOrDefaultAsync<Usuario>(command);
+
+        return usuario;
     }
 
-    public async Task<Usuario?> ObterUsuarioComEndereco(int id)
+    public async Task<IEnumerable<Usuario?>> ObterTodosAtivos(CancellationToken cancellationToken = default)
     {
-        return await _db.Usuarios.AsNoTracking()
-            .Include(usuario => usuario.Endereco)
-            .FirstOrDefaultAsync(usuario => usuario.Id == id);
+        const string query = "SELECT * FROM Usuarios WHERE Ativo = 1;";
+        var command = new CommandDefinition(query, transaction: _session.Transaction, cancellationToken: cancellationToken);
+        var usuarios = await _session.Connection.QueryAsync<Usuario>(command);
+
+        return usuarios;
     }
 
-    public async Task<IEnumerable<Usuario?>> ObterTodosAtivos()
+    public async Task<IEnumerable<Usuario?>> ObterTodosInativos(CancellationToken cancellationToken = default)
     {
-        return await _db.Usuarios.AsNoTracking()
-            .Where(usuario => usuario.Ativo)
-            .Include(usuario => usuario.Endereco)
-            .ToListAsync();
+        const string query = "SELECT * FROM Usuarios WHERE Ativo = 0;";
+
+        var command = new CommandDefinition(query, null, _session.Transaction, cancellationToken: cancellationToken);
+        var usuarios = await _session.Connection.QueryAsync<Usuario>(command);
+
+        return usuarios;
     }
 
-    public async Task<IEnumerable<Usuario?>> ObterTodosInativos()
+    public async Task<DuplicidadeUsuarioDto?> VerificarDuplicidade(string? email = null, string? telefone = null, string? documento = null, CancellationToken cancellationToken = default)
     {
-        return await _db.Usuarios.AsNoTracking()
-            .Where(usuario => !usuario.Ativo)
-            .Include(usuario => usuario.Endereco)
-            .ToListAsync();
-    }
+        var query = new StringBuilder("SELECT ");
+        var parameters = new DynamicParameters();
 
-    public async Task<IEnumerable<Usuario?>> Buscar(Expression<Func<Usuario, bool>> predicate)
-    {
-        return await _baseRepository.Buscar(predicate);
+        if (!string.IsNullOrEmpty(email))
+        {
+            query.Append("EXISTS(SELECT 1 FROM `Usuarios` WHERE `Email` = @Email) AS EmailExistente, ");
+            parameters.Add("Email", email);
+        }
+        else
+        {
+            query.Append("false AS EmailExistente, ");
+        }
+
+        if (!string.IsNullOrEmpty(telefone))
+        {
+            query.Append("EXISTS(SELECT 1 FROM `Usuarios` WHERE `Telefone` = @Telefone) AS TelefoneExistente, ");
+            parameters.Add("Telefone", telefone);
+        }
+        else
+        {
+            query.Append("false AS TelefoneExistente, ");
+        }
+
+        if (!string.IsNullOrEmpty(documento))
+        {
+            query.Append("EXISTS(SELECT 1 FROM `Usuarios` WHERE `Documento` = @Documento) AS DocumentoExistente ");
+            parameters.Add("Documento", documento);
+        }
+        else
+        {
+            query.Append("false AS DocumentoExistente ");
+        }
+
+        query.Append("FROM `Usuarios` LIMIT 1;");
+
+        var command = new CommandDefinition(query.ToString(), parameters, _session.Transaction, cancellationToken: cancellationToken);
+        var duplicidadeUsuarioDto = await _session.Connection.QueryFirstOrDefaultAsync<DuplicidadeUsuarioDto>(command);
+
+        return duplicidadeUsuarioDto;
     }
 
     public void Dispose()
@@ -81,8 +166,7 @@ public sealed class UsuarioRepository : IUsuarioRepository
 
         if (disposing)
         {
-            _db.Dispose();
-            _baseRepository.Dispose();
+            _session.Dispose();
         }
 
         _disposed = true;

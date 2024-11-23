@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using OmniUser.API.Configurations;
-using OmniUser.Infrastructure.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,8 +9,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.RegistrarDependencias();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddApplicationInsightsTelemetry();
-
-builder.Services.AddDbContext<OmniUserDbContext>();
 
 builder.Services.AddCors(options =>
 {
@@ -26,7 +23,6 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 app.UseSwaggerConfig();
-// app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 app.UseCors("PermitirCorsFrontEnd");

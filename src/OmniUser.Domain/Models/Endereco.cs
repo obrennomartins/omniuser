@@ -22,7 +22,7 @@ public class Endereco : EntidadeRastreada
         Usuario = usuario;
     }
 
-    public int UsuarioId { get; init; }
+    public int UsuarioId { get; set; }
 
     public string Logradouro { get; set; } = null!;
     public string Numero { get; set; } = null!;

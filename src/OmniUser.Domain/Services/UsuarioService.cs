@@ -1,6 +1,5 @@
 using OmniUser.Domain.Interfaces;
 using OmniUser.Domain.Models;
-using OmniUser.Domain.Models.Validations;
 using OmniUser.Domain.Notificacoes;
 
 namespace OmniUser.Domain.Services;
@@ -12,8 +11,9 @@ public sealed class UsuarioService : BaseService, IUsuarioService
     private readonly IViaCepService _viaCepService;
     private bool _disposed;
 
-    public UsuarioService(INotificador notificador,
+    public UsuarioService(
         IEnderecoRepository enderecoRepository,
+        INotificador notificador,
         IUsuarioRepository usuarioRepository,
         IViaCepService viaCepService) : base(notificador)
     {
@@ -22,50 +22,83 @@ public sealed class UsuarioService : BaseService, IUsuarioService
         _viaCepService = viaCepService;
     }
 
-    public async Task<Usuario?> Adicionar(Usuario usuario)
+    public async Task<Usuario?> Obter(int idUsuario, CancellationToken cancellationToken = default)
     {
-        if (!ExecutarValidacao(new UsuarioValidation(), usuario))
+        var usuario = await _usuarioRepository.Obter(idUsuario, cancellationToken);
+        var endereco = await _enderecoRepository.ObterPorUsuarioId(idUsuario, cancellationToken);
+        
+        if (usuario is null)
         {
+            Notificar("Não foi possível obter o usuário.");
             return null;
         }
 
-        if (usuario.Endereco is not null && (!ExecutarValidacao(new EnderecoValidation(), usuario.Endereco) ||
-                                             !CepValido(usuario.Endereco).Result))
-        {
-            return null;
-        }
+        usuario.Endereco = endereco;
 
-        if (!VerificaUnicidade(usuario))
-        {
-            return null;
-        }
-
-        return await _usuarioRepository.Adicionar(usuario);
+        return usuario;
     }
 
-    public async Task<Usuario?> Atualizar(Usuario usuario)
+    public async Task<Usuario?> Adicionar(Usuario usuario, CancellationToken cancellationToken = default)
     {
-        if (!usuario.EhValido() ||
-            (usuario.Endereco != null && !usuario.Endereco.EhValido()))
+        if (!usuario.EhValido())
         {
             return null;
         }
 
-        var usuarioDb = await _usuarioRepository.Obter(usuario.Id);
-        if (usuarioDb == null)
+        // Para adicionar o endereço, use o método AdicionarEndereco
+        if (usuario.Endereco is not null)
+        {
+            Notificar("O endereço não pode ser adicionado através deste método.");
+            return null;
+        }
+
+        var usuarioUnico = await VerificaUnicidade(usuario, cancellationToken);
+        if (!usuarioUnico)
+        {
+            return null;
+        }
+
+        var usuarioDb = await _usuarioRepository.Adicionar(usuario, cancellationToken);
+
+        if (usuarioDb is null)
+        {
+            Notificar("Houve um problema ao salvar o usuário. Tente novamente mais tarde.");
+            return null;
+        }
+    
+        return usuarioDb;
+    }
+
+    public async Task<Usuario?> Atualizar(Usuario usuario, CancellationToken cancellationToken = default)
+    {
+        if (!usuario.EhValido())
+        {
+            return null;
+        }
+
+        // Para modificar o endereço, use o método AtualizarEndereco
+        if (usuario.Endereco is not null)
+        {
+            Notificar("O endereço não pode ser modificado através deste método.");
+            return null;
+        }
+
+        var usuarioDb = await _usuarioRepository.Obter(usuario.Id, cancellationToken);
+        if (usuarioDb is null)
         {
             Notificar("Usuário não encontrado.");
             return null;
         }
 
         // Para modificar o campo Ativo, use os métodos Ativar e Desativar.
-        if (usuarioDb.Ativo != usuario.Ativo)
+        if (usuario.Ativo is not null && usuario.Ativo != usuarioDb.Ativo)
         {
-            Notificar("O campo Ativo não deve ser modificado através deste método.");
+            Notificar("O campo Ativo não pode ser modificado através deste método.");
             return null;
         }
 
-        if (!VerificaUnicidade(usuario))
+        var usuarioEhUnico = await VerificaUnicidade(usuario, cancellationToken);
+        if (!usuarioEhUnico)
         {
             return null;
         }
@@ -75,12 +108,13 @@ public sealed class UsuarioService : BaseService, IUsuarioService
         usuarioDb.Email = usuario.Email;
         usuarioDb.Telefone = usuario.Telefone;
 
-        return await _usuarioRepository.Atualizar(usuarioDb);
+        var usuarioAtualizado = await _usuarioRepository.Atualizar(usuarioDb, cancellationToken);
+        return usuarioAtualizado;
     }
 
-    public async Task<bool> Ativar(int id)
+    public async Task<bool> Ativar(int id, CancellationToken cancellationToken = default)
     {
-        var usuario = await _usuarioRepository.Obter(id);
+        var usuario = await _usuarioRepository.Obter(id, cancellationToken);
 
         if (usuario == null)
         {
@@ -88,7 +122,7 @@ public sealed class UsuarioService : BaseService, IUsuarioService
             return false;
         }
 
-        if (usuario.Ativo)
+        if (usuario.Ativo ?? true)
         {
             Notificar("O Usuário já está ativo.");
             return false;
@@ -96,12 +130,12 @@ public sealed class UsuarioService : BaseService, IUsuarioService
 
         usuario.Ativo = true;
 
-        return await _usuarioRepository.Atualizar(usuario) is not null;
+        return await _usuarioRepository.Atualizar(usuario, cancellationToken) is not null;
     }
 
-    public async Task<bool> Desativar(int id)
+    public async Task<bool> Desativar(int id, CancellationToken cancellationToken = default)
     {
-        var usuario = await _usuarioRepository.Obter(id);
+        var usuario = await _usuarioRepository.Obter(id, cancellationToken);
 
         if (usuario == null)
         {
@@ -109,73 +143,115 @@ public sealed class UsuarioService : BaseService, IUsuarioService
             return false;
         }
 
-        if (!usuario.Ativo)
+        if (!(usuario.Ativo ?? true))
         {
             Notificar("O Usuário já está desativado.");
             return false;
         }
 
         usuario.Ativo = false;
-        return await _usuarioRepository.Atualizar(usuario) is not null;
+        var usuarioAtualizado = await _usuarioRepository.Atualizar(usuario, cancellationToken) is not null;
+
+        return usuarioAtualizado;
     }
 
-    public async Task<Endereco?> AtualizarEndereço(Endereco endereco)
+    // TODO
+    #region Endereço
+
+    public async Task<Endereco?> AdicionarEndereco(Endereco endereco, CancellationToken cancellationToken = default)
     {
-        if (!endereco.EhValido())
+        var cepEhValido = await CepValido(endereco);
+        if (!endereco.EhValido() || !cepEhValido)
         {
             return null;
         }
 
-        return await _enderecoRepository.Atualizar(endereco);
+        var usuarioDb = await _usuarioRepository.Obter(endereco.UsuarioId, cancellationToken);
+        if (usuarioDb is null)
+        {
+            Notificar("Não foi possível obter o usuário associado ao endereço.");
+            return null;
+        }
+
+        var existeEnderecoParaUsuario = false;
+
+        usuarioDb.Endereco = await _enderecoRepository.Adicionar(endereco, cancellationToken);
+
+        await _usuarioRepository.Atualizar(usuarioDb, cancellationToken);
+
+        return endereco;
     }
 
-    public void Dispose()
+    public async Task<Endereco?> AtualizarEndereço(Endereco endereco, CancellationToken cancellationToken = default)
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
+        var cepEhValido = await CepValido(endereco);
+        if (!endereco.EhValido() || !cepEhValido)
+        {
+            return null;
+        }
+
+        var enderecoDb = await _enderecoRepository.ObterPorUsuarioId(endereco.UsuarioId, cancellationToken);
+        if (enderecoDb is null)
+        {
+            Notificar("Não existe endereço cadastrado para o usuário. Cadastre um endereço antes de atualizá-lo.");
+            return null;
+        }
+
+        enderecoDb.Logradouro = endereco.Logradouro;
+        enderecoDb.Numero = endereco.Numero;
+        enderecoDb.Complemento = endereco.Numero;
+        enderecoDb.Cep = endereco.Cep;
+        enderecoDb.Bairro = endereco.Bairro;
+        enderecoDb.Cidade = endereco.Cidade;
+        enderecoDb.Uf = endereco.Uf;
+
+        return await _enderecoRepository.Atualizar(enderecoDb, cancellationToken);
     }
 
-    ~UsuarioService()
-    {
-        Dispose();
-    }
+    #endregion
 
+    // TODO
     /// <summary>
     /// Verifica se o documento, o e-mail e o telefone do <see cref="Usuario" /> são únicos. Se não forem, notifica.
     /// </summary>
     /// <param name="usuario">O Usuário a ser verificado.</param>
     /// <returns>Retorna true se ele for único, false caso contrário.</returns>
-    private bool VerificaUnicidade(Usuario usuario)
+    private async Task<bool> VerificaUnicidade(Usuario usuario, CancellationToken cancellationToken = default)
     {
-        var usuarioExistente = _usuarioRepository.Buscar(u =>
-            (usuario.Documento != null && u.Documento == usuario.Documento) ||
-            (usuario.Email != null && u.Email == usuario.Email) ||
-            (usuario.Telefone != null && u.Telefone == usuario.Telefone)).Result.FirstOrDefault();
+        var duplicidadeUsuarioDto = await _usuarioRepository.VerificarDuplicidade(
+            usuario.Email,
+            usuario.Telefone,
+            usuario.Documento,
+            cancellationToken
+        );
 
-        // ReSharper disable once InvertIf
-        if (usuarioExistente is not null)
+        if (duplicidadeUsuarioDto is null or { EmailExistente: false, TelefoneExistente: false, DocumentoExistente: false})
         {
-            if (usuario.Documento is not null && usuarioExistente.Documento == usuario.Documento)
-            {
-                Notificar("Já existe um usuário com o documento informado.");
-            }
-            
-            if (usuario.Email is not null && usuarioExistente.Email == usuario.Email)
-            {
-                Notificar("Já existe um usuário com o e-mail informado.");
-            }
-            
-            if (usuario.Telefone is not null && usuarioExistente.Telefone == usuario.Telefone)
-            {
-                Notificar("Já existe um usuário com o telefone informado.");
-            }
-
-            return false;
+            return true;
         }
 
-        return true;
+        if (duplicidadeUsuarioDto.EmailExistente)
+        {
+            Notificar("Já existe um usuário com o e-mail informado.");
+        }
+
+        if (duplicidadeUsuarioDto.TelefoneExistente)
+        {
+            Notificar("Já existe um usuário com o telefone informado.");
+        }
+
+        if (duplicidadeUsuarioDto.DocumentoExistente)
+        {
+            Notificar("Já existe um usuário com o documento informado.");
+        }
+
+        return false;
     }
 
+    // TODO
+    /// <summary>
+    /// Verifica se o <see cref="Endereco"> 
+    /// </summary>
     private async Task<bool> CepValido(Endereco endereco)
     {
         var enderecoDaApi = await _viaCepService.ObterEndereco(endereco.Cep);
@@ -188,13 +264,12 @@ public sealed class UsuarioService : BaseService, IUsuarioService
         if (endereco.Uf != enderecoDaApi.Uf)
         {
             Notificar(
-                $"A Uf informada não corresponde ao CEP. " +
-                $"Uf informada: {endereco.Uf}. " +
-                $"Uf do CEP: {enderecoDaApi.Uf}.");
+                $"A UF informada não corresponde ao CEP. " +
+                $"UF informada: {endereco.Uf}. " +
+                $"UF do CEP: {enderecoDaApi.Uf}.");
             return false;
         }
 
-        // ReSharper disable once InvertIf
         if (endereco.Cidade != enderecoDaApi.Localidade)
         {
             Notificar(
@@ -205,6 +280,17 @@ public sealed class UsuarioService : BaseService, IUsuarioService
         }
 
         return true;
+    }
+
+    ~UsuarioService()
+    {
+        Dispose();
+    }
+    
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 
     private void Dispose(bool disposing)

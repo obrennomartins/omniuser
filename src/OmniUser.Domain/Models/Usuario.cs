@@ -23,7 +23,7 @@ public class Usuario : EntidadeRastreada
     public string? Telefone { get; set; }
     public string? Documento { get; set; }
     public Endereco? Endereco { get; set; }
-    public bool Ativo { get; set; }
+    public bool? Ativo { get; set; }
 
     public override bool EhValido()
     {

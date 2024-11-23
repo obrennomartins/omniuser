@@ -86,7 +86,7 @@ public class UsuariosController : BaseController
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<UsuarioViewModel>> ObterPorId(int id)
     {
-        var usuario = _mapper.Map<UsuarioViewModel>(await _repository.ObterUsuarioComEndereco(id));
+        var usuario = _mapper.Map<UsuarioViewModel>(await _service.Obter(id));
         return CustomResponse(usuario);
     }
 
@@ -181,9 +181,13 @@ public class UsuariosController : BaseController
             return CustomResponse(ModelState);
         }
 
-        await _service.Atualizar(_mapper.Map<Usuario>(usuarioViewModel));
+        var usuario = _mapper.Map<Usuario>(usuarioViewModel);
+        usuario.Ativo = usuarioViewModel.Ativo;
 
-        return CustomResponse(usuarioViewModel);
+        var usuarioAtualizado = await _service.Atualizar(usuario);
+        var usuarioAtualizadoViewModel = _mapper.Map<UsuarioViewModel>(usuarioAtualizado);
+
+        return CustomResponse(usuarioAtualizadoViewModel);
     }
 
     /// <summary>
@@ -250,5 +254,37 @@ public class UsuariosController : BaseController
         }
 
         return CustomResponse(sucesso);
+    }
+
+    [HttpPost("{idUsuario:int}/Endereco")]
+    public async Task<ActionResult> AdicionarEndereco(int idUsuario, EnderecoViewModel enderecoViewModel)
+    {
+        if (enderecoViewModel.UsuarioId == 0 || enderecoViewModel.UsuarioId != idUsuario)
+        {
+            NotificarErro("O Id do usuário informado não é o mesmo passado na query");
+            return CustomResponse(enderecoViewModel);
+        }
+
+        if (!ModelState.IsValid)
+        {
+            return CustomResponse(ModelState);
+        }
+
+        var endereco = _mapper.Map<Endereco>(enderecoViewModel);
+        var enderecoAtualizado = await _service.AdicionarEndereco(endereco);
+        var enderecoAtualizadoViewModel = _mapper.Map<EnderecoViewModel>(enderecoAtualizado);
+
+        return CustomResponse(enderecoAtualizadoViewModel);
+    }
+
+    
+
+    /// <summary>
+    ///     Exclui o endereço associado a um usuário
+    /// </summary>
+    [HttpDelete("{idUsuario:int}/Endereco")]
+    public async Task<ActionResult> ExcluirEndereco(int idUsuario)
+    {
+        return Ok();
     }
 }

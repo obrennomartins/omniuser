@@ -28,7 +28,7 @@ public class Architecture
     public void CamadaInfrastructure_NaoDeveTerDependenciaEm_CamadaApi()
     {
         // Arrange
-        var infrastructureAssembly = typeof(Infrastructure.Context.OmniUserDbContext).Assembly;
+        var infrastructureAssembly = typeof(Infrastructure.Session.OmniUserDbSession).Assembly;
         var apiAssembly = typeof(API.Configurations.InjecaoDeDependenciasConfig).Assembly;
 
         // Act
